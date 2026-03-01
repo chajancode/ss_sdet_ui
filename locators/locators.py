@@ -6,6 +6,14 @@ class MainPageLocators():
         By.CSS_SELECTOR,
         'div.ast-above-header-wrap'
     )
+    HEADER_CONTACTS = (
+        By.CSS_SELECTOR,
+        'div.ast-above-header-wrap div ul li'
+    )
+    HEADER_SOCIAL_MEDIA = (
+        By.CSS_SELECTOR,
+        'div.header-social-inner-wrap a'
+    )
     NAVIGATION_BAR = (
         By.CSS_SELECTOR,
         '[class*=bar-wrap] [data-section="section-hb-menu-1"]'
