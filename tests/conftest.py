@@ -1,13 +1,23 @@
 import pytest
 
 from selenium import webdriver
+from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 
+from pages.main_page import MainPage
 
-@pytest.fixture
+
+@pytest.fixture(scope='session')
 def driver():
     chrome_options = Options()
     chrome_options.add_argument('--start-maximized')
+    chrome_options.add_argument('--disable-notifications')
     driver = webdriver.Chrome(options=chrome_options)
     yield driver
     driver.quit()
+
+
+@pytest.fixture()
+def main_page(driver: WebDriver) -> MainPage:
+    page = MainPage(driver)
+    return page
