@@ -18,3 +18,7 @@ class StringChecker:
     @staticmethod
     def is_email(string: str) -> bool:
         return StringChecker._string_check(string, RP.EMAIL_PATTERN)
+
+    @staticmethod
+    def is_social_media(string: str) -> bool:
+        return StringChecker._string_check(string, RP.SOCIAL_MEDIA_PATTERN)
