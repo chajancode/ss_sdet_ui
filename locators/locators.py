@@ -33,3 +33,15 @@ class MainPageLocators():
         By.XPATH,
         '//*[contains(text(), "Register Now")]'
     )
+    MOST_POPULAR_COURSES = (
+        By.CSS_SELECTOR,
+        'div[class*=info-box-carousel] div.swiper-wrapper'
+    )
+    SLIDER_ARROW_PREV = (
+        By.CSS_SELECTOR,
+        '.elementor-swiper-button-prev'
+    )
+    SLIDER_ARROW_NEXT = (
+        By.CSS_SELECTOR,
+        'elementor-swiper-button-next'
+    )
