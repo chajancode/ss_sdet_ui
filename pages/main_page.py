@@ -9,6 +9,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from config.params import URL_MAIN_PAGE
 from locators.locators import MainPageLocators
+from utils.string_checkers import StringChecker as SC
 
 
 class MainPage:
@@ -26,12 +27,42 @@ class MainPage:
             self,
             locator: Tuple[By, str],
             element_name: str,
-            min_expected: int = 1) -> None:
+            ) -> None:
 
         elements = self.wait.until(
             EC.visibility_of_all_elements_located(locator)
             )
         assert elements, f'{element_name} не отображается'
+
+    def _validate_phone_numbers(self, contacts: list[WebElement]) -> None:
+        phone_numbers = [
+            contact.text for contact in contacts
+            if SC.is_phone_number(contact.text)
+            ]
+        assert phone_numbers, 'номера телефонов отсутствуют'
+
+    def _validate_links(
+            self,
+            links: list[WebElement],
+            validator: SC,
+            link_type: str
+            ) -> None:
+        valid_links = [
+            link for link in links
+            if link.get_attribute('href') and validator(
+                link.get_attribute('href')
+            )
+        ]
+        assert valid_links, f'Ссылка на {link_type} не найдена'
+
+    def _validate_single_link(
+            self,
+            element: WebElement,
+            validator: SC,
+            link_type: str
+            ) -> None:
+        href = element.get_attribute('href')
+        assert href and validator(href), f'Ссылка на {link_type} не найдена'
 
     def check_header_is_displayed(self) -> None:
         self._check_if_element_displayed(
@@ -64,3 +95,22 @@ class MainPage:
         assert all(
             contact.text for contact in contacts
             ), 'Не все контакты отображаются'
+
+        self._validate_phone_numbers(contacts)
+        self._validate_links(contacts, SC.is_skype, 'Skype')
+        self._validate_links(contacts, SC.is_email, 'Email')
+
+    def check_social_media(self) -> None:
+        social_media = self._find_elements(
+            *MainPageLocators.HEADER_SOCIAL_MEDIA
+        )
+        assert social_media, 'Социальные сети не найдены'
+
+        assert all(
+            link.get_attribute('href') for link in social_media
+        ), 'Не все ссылки присутствуют'
+
+        for link in social_media:
+            self._validate_single_link(
+                link, SC.is_social_media, link.get_attribute('aria-label')
+            )

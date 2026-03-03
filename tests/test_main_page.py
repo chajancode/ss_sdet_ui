@@ -13,3 +13,5 @@ class TestMainPage:
         main_page.check_navbar_is_displayed()
         main_page.check_courses_is_displayed()
         main_page.check_footer_is_displayed()
+        main_page.check_contacts()
+        main_page.check_social_media()

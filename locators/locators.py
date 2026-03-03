@@ -8,11 +8,11 @@ class MainPageLocators():
     )
     HEADER_CONTACTS = (
         By.CSS_SELECTOR,
-        'div.ast-above-header-wrap div ul li'
+        'div.ast-above-header-wrap div ul li a[href]'
     )
     HEADER_SOCIAL_MEDIA = (
         By.CSS_SELECTOR,
-        'div.header-social-inner-wrap a'
+        'div.header-social-inner-wrap a[href]'
     )
     NAVIGATION_BAR = (
         By.CSS_SELECTOR,
