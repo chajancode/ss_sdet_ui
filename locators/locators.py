@@ -29,6 +29,23 @@ class MainPageLocators():
         By.CSS_SELECTOR,
         '[data-id="573bc308"]'
     )
+    FOOTER_ADDRESS = (
+        By.XPATH,
+        '//span[contains(text(), "Way2Automation")]'
+    )
+    FOOTER_PHONE_NUMBERS = (
+        By.XPATH, (
+            '//div[contains(@class, "elementor-element-695441a0")]'
+            '//ul/li/a[starts-with(@href, "tel:")]'
+        )
+    )
+    ABOUT_US_BLOCK = (
+        By.CSS_SELECTOR, (
+            '[data-id="573bc308"]'
+            ' div .elementor-element-695441a0 div ul li'
+            ' span.elementor-icon-list-text'
+        )
+    )
     REGISTER_NOW_BUTTON = (
         By.XPATH,
         '//*[contains(text(), "Register Now")]'

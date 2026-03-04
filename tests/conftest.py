@@ -11,7 +11,10 @@ from pages.main_page import MainPage
 def driver():
     chrome_options = Options()
     chrome_options.add_argument('--start-maximized')
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_argument('--disable-notifications')
+    chrome_options.page_load_strategy = 'eager'
     driver = webdriver.Chrome(options=chrome_options)
     yield driver
     driver.quit()
