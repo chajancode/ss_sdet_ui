@@ -16,6 +16,10 @@ class StringChecker:
         return StringChecker._string_check(string, RP.SKYPE_PATTERN)
 
     @staticmethod
+    def is_email_link(string: str) -> bool:
+        return StringChecker._string_check(string, RP.EMAIL_LINK_PATTERN)
+
+    @staticmethod
     def is_email(string: str) -> bool:
         return StringChecker._string_check(string, RP.EMAIL_PATTERN)
 

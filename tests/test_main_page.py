@@ -15,3 +15,6 @@ class TestMainPage:
         main_page.check_footer_is_displayed()
         main_page.check_contacts()
         main_page.check_social_media()
+        main_page.check_footer_address()
+        main_page.check_footer_phone_numbers()
+        main_page.check_footer_emails()

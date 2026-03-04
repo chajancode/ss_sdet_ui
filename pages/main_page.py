@@ -43,7 +43,8 @@ class MainPage:
             ]
         assert phone_numbers, (
             'Hомера телефонов отсутствуют или не соответствуют формату.',
-            f'Получен список значений {[x.text for x in contacts]}'
+            f'Получен список значений {[x.text for x in contacts]}',
+            f'Номера {phone_numbers}'
         )
 
     def _validate_links(
@@ -99,7 +100,7 @@ class MainPage:
 
         self._validate_phone_numbers(contacts)
         self._validate_links(contacts, SC.is_skype, 'Skype')
-        self._validate_links(contacts, SC.is_email, 'Email')
+        self._validate_links(contacts, SC.is_email_link, 'Email')
 
     def check_social_media(self) -> None:
         social_media = self._find_elements(
@@ -130,6 +131,14 @@ class MainPage:
 
     def check_footer_phone_numbers(self) -> None:
         phone_numbers = self._find_elements(
-            MainPageLocators.FOOTER_PHONE_NUMBERS
+            *MainPageLocators.FOOTER_PHONE_NUMBERS
         )
         self._validate_phone_numbers(phone_numbers)
+
+    def check_footer_emails(self) -> None:
+        emails = self._find_elements(
+            *MainPageLocators.FOOTER_EMAILS
+        )
+        assert all(
+            SC.is_email(email.text) for email in emails
+        ), 'Не все имейлы соответствуют формату'
