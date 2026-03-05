@@ -10,7 +10,7 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 from config.params import URL_MAIN_PAGE
-from locators.locators import MainPageLocators
+from locators.locators import LifetimeMembershipPageLocators, MainPageLocators
 from utils.js_scripts import FOOTER_ADDRESS_SCRIPT
 from utils.string_checkers import StringChecker as SC
 
@@ -20,6 +20,11 @@ class MainPage:
         self.driver = driver
         self.url = driver.get(URL_MAIN_PAGE)
         self.wait = WebDriverWait(self.driver, wait)
+
+    def _find_element(self, locator: Tuple[By, str]) -> WebElement:
+        return self.wait.until(
+            EC.presence_of_element_located(locator)
+        )
 
     def _find_elements(self, by: By, locator: str) -> list[WebElement]:
         return self.wait.until(
@@ -70,6 +75,23 @@ class MainPage:
             ) -> None:
         href = element.get_attribute('href')
         assert href and validator(href), f'Ссылка на {link_type} не найдена'
+
+    def _is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
+        try:
+            return self.wait.until(
+                EC.element_to_be_clickable(
+                    locator
+                )
+            )
+        except TimeoutException:
+            return None
+
+    def _click_element(self, locator: Tuple[By, str]) -> None:
+        element = self._is_clickable(locator)
+        if element is not None:
+            element.click()
+        else:
+            return None
 
     def close_popup(self) -> None:
         try:
@@ -173,4 +195,31 @@ class MainPage:
 
         assert init_location['y'] != new_location['y'], (
             'Позиция меню навигации не изменилась после скролла.'
+        )
+
+    def check_navigation_through_navbar(self) -> None:
+        self.close_popup()
+
+        all_courses = self._click_element(
+            MainPageLocators.NAVBAR_ALL_COURSES
+        )
+        assert all_courses, 'Пункт меню "All courses" не доступен'
+
+        lifetime_membership = self._click_element(
+            MainPageLocators.NAVBAR_LIFETIME_MEMBERSHIP
+        )
+        assert lifetime_membership, (
+            'Пункт меню "All Courses > Lifetime Membership" '
+            'не доступен'
+        )
+
+        self.wait.until(EC.presence_of_all_elements_located(
+            ((By.TAG_NAME, 'body'))
+        ))
+        page_title = self._find_element(
+            LifetimeMembershipPageLocators.HEADING_TITLE
+        )
+        assert page_title == 'LIFETIME MEMBERSHIP CLUB', (
+            f'Заголовок не соответствует ожидаемому. '
+            f'Получен: {page_title}'
         )

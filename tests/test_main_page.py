@@ -18,3 +18,5 @@ class TestMainPage:
         main_page.check_footer_address()
         main_page.check_footer_phone_numbers()
         main_page.check_footer_emails()
+        main_page.check_navbar_on_scroll()
+        main_page.check_navigation_through_navbar()
