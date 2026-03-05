@@ -5,11 +5,12 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 
 from pages.main_page import MainPage
-
+from config.params import USER_AGENT
 
 @pytest.fixture(scope='session')
 def driver():
     chrome_options = Options()
+    chrome_options.add_argument(f'user-agent={USER_AGENT}')
     chrome_options.add_argument('--start-maximized')
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument('--disable-dev-shm-usage')
