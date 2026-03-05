@@ -5,6 +5,7 @@ from selenium.webdriver.chrome .webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 
 
@@ -28,13 +29,13 @@ class MainPage:
     def _check_if_element_visible(
             self,
             locator: Tuple[By, str]
-            ) -> None:
+            ) -> WebElement | None:
         try:
             return self.wait.until(
                 EC.visibility_of_element_located(locator)
                 )
         except TimeoutException:
-            return False
+            return None
 
     def _validate_phone_numbers(self, contacts: list[WebElement]) -> None:
         phone_numbers = [
@@ -69,6 +70,17 @@ class MainPage:
             ) -> None:
         href = element.get_attribute('href')
         assert href and validator(href), f'Ссылка на {link_type} не найдена'
+
+    def close_popup(self) -> None:
+        try:
+            close_button = self.wait.until(
+                EC.element_to_be_clickable(
+                    MainPageLocators.CLOSE_POPUP
+                )
+            )
+            close_button.click()
+        except TimeoutException:
+            pass
 
     def check_header_is_displayed(self) -> None:
         assert self._check_if_element_visible(
@@ -142,3 +154,23 @@ class MainPage:
         assert all(
             SC.is_email(email.text) for email in emails
         ), 'Не все имейлы соответствуют формату'
+
+    def check_navbar_on_scroll(self, delta_x=0, delta_y=1000) -> None:
+        navbar = self._check_if_element_visible(
+            MainPageLocators.NAVIGATION_BAR
+        )
+        init_location = navbar.location
+
+        self.close_popup()
+
+        action = ActionChains(self.driver)
+        action.scroll_by_amount(delta_x, delta_y).perform()
+
+        navbar_after = self._check_if_element_visible(
+            MainPageLocators.NAVIGATION_BAR
+        )
+        new_location = navbar_after.location
+
+        assert init_location['y'] != new_location['y'], (
+            'Позиция меню навигации не изменилась после скролла.'
+        )
