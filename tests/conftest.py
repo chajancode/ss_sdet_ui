@@ -4,8 +4,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 from selenium.webdriver.chrome.options import Options
 
+from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from config.params import USER_AGENT
+
 
 @pytest.fixture(scope='session')
 def driver():
@@ -24,4 +26,10 @@ def driver():
 @pytest.fixture()
 def main_page(driver: WebDriver) -> MainPage:
     page = MainPage(driver)
+    return page
+
+
+@pytest.fixture()
+def login_page(driver: WebDriver) -> LoginPage:
+    page = LoginPage(driver)
     return page
