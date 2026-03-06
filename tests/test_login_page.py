@@ -14,3 +14,7 @@ class TestLoginPage:
         login_page.check_fill_fields_and_login_success(
             username='angular', password='password'
         )
+        login_page.check_logout()
+        login_page.check_fill_fields_and_login_fail(
+            username='ralugna', password='drowssap'
+        )
