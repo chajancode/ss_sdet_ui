@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 
 
-class MainPageLocators():
+class MainPageLocators:
     HEADER = (
         By.CSS_SELECTOR,
         'div.ast-above-header-wrap'
@@ -17,6 +17,18 @@ class MainPageLocators():
     NAVIGATION_BAR = (
         By.CSS_SELECTOR,
         '[class*=bar-wrap] [data-section="section-hb-menu-1"]'
+    )
+    NAVBAR_ALL_COURSES = (
+        By.CSS_SELECTOR,
+        '#menu-item-27580'
+    )
+    NAVBAR_LIFETIME_MEMBERSHIP = (
+        By.CSS_SELECTOR,
+        '#menu-item-27580 ul li:first-child a span.menu-text'
+    )
+    CLOSE_POPUP = (
+        By.CSS_SELECTOR,
+        'div i.eicon-close'
     )
     COURSES_LIST = (
         By.CSS_SELECTOR, (
@@ -37,6 +49,12 @@ class MainPageLocators():
         By.XPATH, (
             '//div[contains(@class, "elementor-element-695441a0")]'
             '//ul/li/a[starts-with(@href, "tel:")]'
+        )
+    )
+    FOOTER_EMAILS = (
+        By.XPATH, (
+            '//div[contains(@class, "elementor-element-695441a0")]'
+            '//ul/li/a[starts-with(@href, "mailto")]'
         )
     )
     ABOUT_US_BLOCK = (
@@ -61,4 +79,30 @@ class MainPageLocators():
     SLIDER_ARROW_NEXT = (
         By.CSS_SELECTOR,
         'elementor-swiper-button-next'
+    )
+
+
+class LifetimeMembershipPageLocators:
+    HEADING_TITLE = (
+        By.XPATH,
+        '//*[@id="post-25580"]/div//section/div//h1'
+    )
+
+
+class LoginPageLocators:
+    FIELD_USERNAME = (
+        By.CSS_SELECTOR,
+        'input#username'
+    )
+    FIELD_PASSWORD = (
+        By.CSS_SELECTOR,
+        'input#password'
+    )
+    FIELD_USERNAME_DESCRIPTION = (
+        By.CSS_SELECTOR,
+        'input#formly_1_input_username_0'
+    )
+    BUTTON_LOGIN = (
+        By.CSS_SELECTOR,
+        'button.btn-danger'
     )
