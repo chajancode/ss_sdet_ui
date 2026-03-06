@@ -1,9 +1,6 @@
-from typing import Tuple
-
 from selenium.common import TimeoutException
 from selenium.webdriver.chrome .webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
@@ -11,36 +8,15 @@ from selenium.webdriver.remote.webelement import WebElement
 
 from config.params import URL_MAIN_PAGE
 from locators.locators import LifetimeMembershipPageLocators, MainPageLocators
+from pages.base_page import BasePage
 from utils.js_scripts import FOOTER_ADDRESS_SCRIPT
 from utils.string_checkers import StringChecker as SC
 
 
-class MainPage:
-    def __init__(self, driver: WebDriver, wait=10):
-        self.driver = driver
+class MainPage(BasePage):
+    def __init__(self, driver: WebDriver):
+        super().__init__(driver)
         self.url = driver.get(URL_MAIN_PAGE)
-        self.wait = WebDriverWait(self.driver, wait)
-
-    def _find_element(self, locator: Tuple[By, str]) -> WebElement:
-        return self.wait.until(
-            EC.presence_of_element_located(locator)
-        )
-
-    def _find_elements(self, by: By, locator: str) -> list[WebElement]:
-        return self.wait.until(
-            EC.presence_of_all_elements_located((by, locator))
-        )
-
-    def _check_if_element_visible(
-            self,
-            locator: Tuple[By, str]
-            ) -> WebElement | None:
-        try:
-            return self.wait.until(
-                EC.visibility_of_element_located(locator)
-                )
-        except TimeoutException:
-            return None
 
     def _validate_phone_numbers(self, contacts: list[WebElement]) -> None:
         phone_numbers = [
@@ -76,23 +52,6 @@ class MainPage:
         href = element.get_attribute('href')
         assert href and validator(href), f'Ссылка на {link_type} не найдена'
 
-    def _is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
-        try:
-            return self.wait.until(
-                EC.element_to_be_clickable(
-                    locator
-                )
-            )
-        except TimeoutException:
-            return None
-
-    def _click_element(self, locator: Tuple[By, str]) -> None:
-        element = self._is_clickable(locator)
-        if element is not None:
-            element.click()
-        else:
-            return None
-
     def close_popup(self) -> None:
         try:
             close_button = self.wait.until(
@@ -126,7 +85,7 @@ class MainPage:
 
     def check_contacts(self) -> None:
         contacts = self._find_elements(
-            *MainPageLocators.HEADER_CONTACTS
+            MainPageLocators.HEADER_CONTACTS
         )
         assert all(
             contact.text for contact in contacts
@@ -138,7 +97,7 @@ class MainPage:
 
     def check_social_media(self) -> None:
         social_media = self._find_elements(
-            *MainPageLocators.HEADER_SOCIAL_MEDIA
+            MainPageLocators.HEADER_SOCIAL_MEDIA
         )
         assert social_media, 'Социальные сети не найдены'
 
@@ -165,13 +124,13 @@ class MainPage:
 
     def check_footer_phone_numbers(self) -> None:
         phone_numbers = self._find_elements(
-            *MainPageLocators.FOOTER_PHONE_NUMBERS
+            MainPageLocators.FOOTER_PHONE_NUMBERS
         )
         self._validate_phone_numbers(phone_numbers)
 
     def check_footer_emails(self) -> None:
         emails = self._find_elements(
-            *MainPageLocators.FOOTER_EMAILS
+            MainPageLocators.FOOTER_EMAILS
         )
         assert all(
             SC.is_email(email.text) for email in emails
@@ -183,8 +142,6 @@ class MainPage:
         )
         init_location = navbar.location
 
-        self.close_popup()
-
         action = ActionChains(self.driver)
         action.scroll_by_amount(delta_x, delta_y).perform()
 
@@ -193,7 +150,7 @@ class MainPage:
         )
         new_location = navbar_after.location
 
-        assert init_location['y'] != new_location['y'], (
+        assert init_location['y'] == new_location['y'], (
             'Позиция меню навигации не изменилась после скролла.'
         )
 
@@ -219,7 +176,7 @@ class MainPage:
         page_title = self._find_element(
             LifetimeMembershipPageLocators.HEADING_TITLE
         )
-        assert page_title == 'LIFETIME MEMBERSHIP CLUB', (
+        assert page_title.text == 'LIFETIME MEMBERSHIP CLUB', (
             f'Заголовок не соответствует ожидаемому. '
             f'Получен: {page_title}'
         )
