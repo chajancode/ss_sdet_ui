@@ -4,3 +4,5 @@ USER_AGENT = (
     ' Chrome/122.0.0.0 Safari/537.36)'
 )
 URL_MAIN_PAGE = 'https://www.way2automation.com/'
+URL_LOGIN_PAGE = URL_MAIN_PAGE + \
+                    '/angularjs-protractor/registeration/#/login'

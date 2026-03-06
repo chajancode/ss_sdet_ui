@@ -106,3 +106,7 @@ class LoginPageLocators:
         By.CSS_SELECTOR,
         'button.btn-danger'
     )
+    MSG_LOGGED_IN = (
+        By.XPATH,
+        "//p[contains(text(), \"You're logged in\")]"
+    )
