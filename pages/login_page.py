@@ -1,6 +1,7 @@
 from typing import Tuple
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 from config.params import URL_LOGIN_PAGE
 from locators.locators import LoginPageLocators
@@ -12,16 +13,15 @@ class LoginPage(BasePage):
         super().__init__(driver)
         self.url = driver.get(URL_LOGIN_PAGE)
 
-    def _fill_text_form(self, locator: Tuple[By, str], value: str):
+    def fill_text_form(self, locator: Tuple[By, str], value: str) -> None:
         self._find_element(locator).send_keys(value)
 
-    def _do_login(
+    def do_login(
             self,
             username: str,
             password: str,
-            msg_expected: str,
             msg_locator: Tuple[By, str],
-            ) -> None:
+            ) -> WebElement | None:
         self._fill_text_form(
             LoginPageLocators.FLD_USERNAME, username
         )
@@ -34,12 +34,7 @@ class LoginPage(BasePage):
         self._click_element(
             LoginPageLocators.BTN_LOGIN
         )
-        msg = self._find_element(msg_locator)
-
-        assert msg.text == msg_expected, (
-            f'Сообщение не появилось или не соответствует ожидаемому. '
-            f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
-        )
+        return self._find_element(msg_locator)
 
     def check_fields_visibility(self):
         assert self._check_if_element_visible(
@@ -54,36 +49,54 @@ class LoginPage(BasePage):
 
     def check_login_button_is_not_clickable(self):
         assert not self._click_element(
-            LoginPageLocators.BTN_LOGIN
+                LoginPageLocators.BTN_LOGIN
         ), 'Кнопка "Login" кликабельна'
 
     def check_fill_fields_and_login_success(
             self,
             username: str,
-            password: str
+            password: str,
+            msg_expected='You\'re logged in!!'
             ) -> None:
-        self._do_login(
+        msg = self.do_login(
             username=username,
             password=password,
-            msg_expected='You\'re logged in!!',
             msg_locator=LoginPageLocators.MSG_LOGGED_IN
         )
+        if msg:
+            assert msg.text == msg_expected, (
+                f'Сообщение не появилось или не соответствует ожидаемому. '
+                f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
+            )
+        else:
+            raise AssertionError('Не соответствует ожидаемому результату')
 
     def check_fill_fields_and_login_fail(
             self,
             username: str,
-            password: str
+            password: str,
+            msg_expected='Username or password is incorrect',
             ) -> None:
-        self._do_login(
+        msg = self.do_login(
             username=username,
             password=password,
-            msg_expected='Username or password is incorrect',
             msg_locator=LoginPageLocators.MSG_AUTH_ERROR
         )
+        if msg:
+            assert msg.text == msg_expected, (
+                f'Сообщение не появилось или не соответствует ожидаемому. '
+                f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
+            )
+        else:
+            raise AssertionError('Не соответствует ожидаемому результату')
 
     def check_logout(self) -> None:
-        self._click_element(
-            LoginPageLocators.BTN_LOGOUT
-        )
+        logout_btn = self._click_element(
+                LoginPageLocators.BTN_LOGOUT
+            )
+        if not logout_btn:
+            raise AssertionError(
+                'Кнопка Logout не появилась или не кликабельна'
+            )
         self.check_fields_visibility()
         self.check_login_button_is_not_clickable()
