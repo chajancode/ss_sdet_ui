@@ -2,7 +2,13 @@ from utils.regexp_patterns import RegexpPatterns as RP
 
 
 class StringChecker:
+    """
+    Вспомогательный класс для проверки строк по регулярным выражениям.
 
+    Предоставляет статические методы для валидации различных форматов
+    данных:
+    номеров телефонов, ссылок Skype, email-адресов и ссылок, URL соцсетей.
+    """
     @staticmethod
     def _string_check(string: str, pattern: str) -> bool:
         return bool(pattern.match(string.strip()))
