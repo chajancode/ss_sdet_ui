@@ -35,7 +35,7 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(self.driver, wait)
 
-    def _find_element(self, locator: Tuple[By, str]) -> WebElement | None:
+    def find_element(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Находит первый элемент, соответствующий локатору, с ожиданием его
         присутствия. Если элемент не найден в течение заданного таймаута,
@@ -56,7 +56,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
-    def _find_elements(
+    def find_elements(
                 self, locator: Tuple[By, str]
             ) -> list[WebElement] | None:
         """
@@ -81,7 +81,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
-    def _is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
+    def is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Проверяет, доступен ли элемент для клика, с ожиданием.
 
@@ -106,7 +106,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
-    def _click_element(self, locator: Tuple[By, str]) -> WebElement | None:
+    def click_element(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Кликает по элементу, если он доступен для клика.
 
@@ -131,7 +131,7 @@ class BasePage:
         except WebDriverException:
             return None
 
-    def _check_if_element_visible(
+    def check_if_element_visible(
             self,
             locator: Tuple[By, str]
             ) -> WebElement | None:
