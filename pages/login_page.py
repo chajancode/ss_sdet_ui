@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -25,6 +26,7 @@ class LoginPage(BasePage):
         super().__init__(driver)
         self.url = driver.get(URL_LOGIN_PAGE)
 
+    @allure.step('Заполнение поля {locator} значением {value}.')
     def fill_text_form(self, locator: Tuple[By, str], value: str) -> None:
         """
         Заполняет текстовое поле указанным значением.
@@ -35,8 +37,13 @@ class LoginPage(BasePage):
             - `locator (Tuple[By, str])`: Кортеж, определяющий поиск элемента.
             - `value (str)`: Текст, который нужно ввести в поле.
         """
-        self._find_element(locator).send_keys(value)
+        self.find_element(locator).send_keys(value)
 
+    @allure.step(
+            'Выполнение процесса аутентификации.'
+            ' Имя пользователя: {username},'
+            ' пароль: {password}'
+    )
     def do_login(
             self,
             username: str,
@@ -59,20 +66,21 @@ class LoginPage(BasePage):
             - `WebElement | None`: Элемент с сообщением результата или `None`,
                 если элемент не найден.
         """
-        self._fill_text_form(
+        self.fill_text_form(
             LoginPageLocators.FLD_USERNAME, username
         )
-        self._fill_text_form(
+        self.fill_text_form(
             LoginPageLocators.FLD_PASSWORD, password
         )
-        self._fill_text_form(
+        self.fill_text_form(
             LoginPageLocators.FLD_USERNAME_DESCRIPTION, username
         )
-        self._click_element(
+        self.click_element(
             LoginPageLocators.BTN_LOGIN
         )
-        return self._find_element(msg_locator)
+        return self.find_element(msg_locator)
 
+    @allure.step('Проверка видимости обязательных полей формы авторизации')
     def check_fields_visibility(self) -> None:
         """
         Проверяет видимость обязательных полей формы авторизации.
@@ -83,16 +91,17 @@ class LoginPage(BasePage):
         **Raises:**
             - `AssertionError`: Если какое‑либо из полей не отображается.
         """
-        assert self._check_if_element_visible(
+        assert self.check_if_element_visible(
             LoginPageLocators.FLD_USERNAME
         ), 'Поле "Username" не отображается'
-        assert self._check_if_element_visible(
+        assert self.check_if_element_visible(
             LoginPageLocators.FLD_PASSWORD
         ), 'Поле "Password" не отображается'
-        assert self._check_if_element_visible(
+        assert self.check_if_element_visible(
             LoginPageLocators.FLD_USERNAME_DESCRIPTION
         ), 'Поле "Username (username description)" не отображается'
 
+    @allure.step('Проверка некликабельности кнопки "login".')
     def check_login_button_is_not_clickable(self) -> None:
         """
         Проверяет, что кнопка «Login» недоступна для клика.
@@ -102,10 +111,15 @@ class LoginPage(BasePage):
         **Raises:**
             - `AssertionError`: Если кнопка кликабельна.
         """
-        assert not self._click_element(
+        assert not self.click_element(
                 LoginPageLocators.BTN_LOGIN
         ), 'Кнопка "Login" кликабельна'
 
+    @allure.step(
+            'Проверка входа в систему с валидными данными. '
+            ' Имя пользователя: {username}, пароль: {password}.'
+            'Ожидаемое сообщение: {msg_expected}.'
+    )
     def check_fill_fields_and_login_success(
             self,
             username: str,
@@ -140,6 +154,11 @@ class LoginPage(BasePage):
         else:
             raise AssertionError('Не соответствует ожидаемому результату')
 
+    @allure.step(
+            'Проверка входа в систему с невалидными данными.'
+            ' Имя пользователя: {username}, пароль: {password}.'
+            ' Ожидаемое сообщение: {msg_expected}.'
+    )
     def check_fill_fields_and_login_fail(
             self,
             username: str,
@@ -177,6 +196,7 @@ class LoginPage(BasePage):
         else:
             raise AssertionError('Не соответствует ожидаемому результату')
 
+    @allure.step('Проверка успешного выхода из системы')
     def check_logout(self) -> None:
         """
         Проверяет процесс выхода из системы.
@@ -189,7 +209,7 @@ class LoginPage(BasePage):
             - `AssertionError`: Если кнопка «Logout» не найдена или не
             кликабельна, либо если последующие проверки не пройдены.
         """
-        logout_btn = self._click_element(
+        logout_btn = self.click_element(
                 LoginPageLocators.BTN_LOGOUT
             )
         if not logout_btn:

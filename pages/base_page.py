@@ -1,5 +1,6 @@
 from typing import Tuple
 
+import allure
 from selenium.webdriver.chrome .webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
@@ -35,6 +36,7 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(self.driver, wait)
 
+    @allure.step('Поиск элемента: {locator}.')
     def find_element(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Находит первый элемент, соответствующий локатору, с ожиданием его
@@ -56,6 +58,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
+    @allure.step('Поиск всех элементов: {locator}.')
     def find_elements(
                 self, locator: Tuple[By, str]
             ) -> list[WebElement] | None:
@@ -81,6 +84,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
+    @allure.step('Проверка кликабельности элемента: {locator}')
     def is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Проверяет, доступен ли элемент для клика, с ожиданием.
@@ -106,6 +110,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
+    @allure.step('Клик по элементу: {locator}.')
     def click_element(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Кликает по элементу, если он доступен для клика.
@@ -119,10 +124,10 @@ class BasePage:
                 и локатор элемента.
 
         **Returns:**
-            - `WebElement | None`: Элемент, по которому был выполнен клик, или 
+            - `WebElement | None`: Элемент, по которому был выполнен клик, или
             `None` в случае ошибки или недоступности элемента.
         """
-        element = self._is_clickable(locator)
+        element = self.is_clickable(locator)
         if element is None:
             return None
         try:
@@ -131,6 +136,7 @@ class BasePage:
         except WebDriverException:
             return None
 
+    @allure.step('Проверка видимости элемента: {locator}.')
     def check_if_element_visible(
             self,
             locator: Tuple[By, str]

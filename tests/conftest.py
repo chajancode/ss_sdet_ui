@@ -12,6 +12,10 @@ from config.params import USER_AGENT
 @pytest.fixture(scope='session')
 def driver():
     chrome_options = Options()
+    prefs = {
+        "profile.password_manager_leak_detection": False
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
     chrome_options.add_argument(f'user-agent={USER_AGENT}')
     chrome_options.add_argument('--start-maximized')
     chrome_options.add_argument('--no-sandbox')
