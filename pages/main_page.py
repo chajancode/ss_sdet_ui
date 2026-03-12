@@ -8,7 +8,8 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 from config.params import URL_MAIN_PAGE
-from locators.locators import LifetimeMembershipPageLocators, MainPageLocators
+from locators.locators import LifetimeMembershipPageLocators
+from locators.main_page_locators import MainPageLocators
 from pages.base_page import BasePage
 from utils.js_scripts import FOOTER_ADDRESS_SCRIPT
 from utils.string_checkers import StringChecker as SC
@@ -34,6 +35,16 @@ class MainPage(BasePage):
         """
         super().__init__(driver)
         self.url = driver.get(URL_MAIN_PAGE)
+
+    @allure.step('Открыть главную страницу.')
+    def open(self) -> None:
+        """
+        Открывает главную страницу.
+
+        Returns:
+            None
+        """
+        self.url = self.driver.get(URL_MAIN_PAGE)
 
     @allure.step('Проверить наличие и соответствие номеров телефонов формату.')
     def _validate_phone_numbers(self, contacts: list[WebElement]) -> None:

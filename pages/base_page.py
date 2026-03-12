@@ -1,4 +1,5 @@
 from typing import Tuple
+from abc import ABC, abstractmethod
 
 import allure
 from selenium.webdriver.chrome .webdriver import WebDriver
@@ -9,9 +10,9 @@ from selenium.common import TimeoutException, WebDriverException
 from selenium.webdriver.support import expected_conditions as EC
 
 
-class BasePage:
+class BasePage(ABC):
     """
-    Базовый класс для всех страниц, подлежащих автоматизированному
+    Абстрактный базовый класс для всех страниц, подлежащих автоматизированному
     тестированию веб-приложений.
 
     Предоставляет интерфейс для взаимодействия с элементами страницы
@@ -35,6 +36,15 @@ class BasePage:
 
         self.driver = driver
         self.wait = WebDriverWait(self.driver, wait)
+
+    @abstractmethod
+    def open(self) -> None:
+        """
+        Абстрактный метод открытия страницы.
+
+        Raises:
+            NotImplementedError: если метод не реализован в дочернем классе.
+        """
 
     @allure.step('Найти элемент: {locator}.')
     def find_element(self, locator: Tuple[By, str]) -> WebElement | None:
@@ -120,15 +130,15 @@ class BasePage:
 
         Сначала проверяет, что элемент кликабелен. Если да, выполняет клик.
         В случае ошибки при клике или если элемент не кликабелен,
-        возвращает `None`.
+        возвращает None.
 
         Args:
             locator (Tuple[By, str]): Кортеж, определяющий поиск,
                     и локатор элемента.
 
         Returns:
-            WebElement | None`: Элемент, по которому был выполнен клик, или
-            `None` в случае ошибки или недоступности элемента.
+            WebElement | None: Элемент, по которому был выполнен клик, или
+             None в случае ошибки или недоступности элемента.
         """
         element = self.is_clickable(locator)
         if element is None:

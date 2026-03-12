@@ -5,8 +5,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
 from config.params import URL_LOGIN_PAGE
-from locators.locators import LoginPageLocators
+from locators.login_page_locators import LoginPageLocators
 from pages.base_page import BasePage
+from utils.batch_assert import BatchAssert
 
 
 class LoginPage(BasePage):
@@ -25,7 +26,16 @@ class LoginPage(BasePage):
             для управления браузером.
         """
         super().__init__(driver)
-        self.url = driver.get(URL_LOGIN_PAGE)
+
+    @allure.step('Открыть страницу авторизации')
+    def open(self) -> None:
+        """
+        Открывает страницу авторизации.
+
+        Returns:
+            None
+        """
+        self.url = self.driver.get(URL_LOGIN_PAGE)
 
     @allure.step('Заполненить поля {locator} значением {value}.')
     def fill_text_form(self, locator: Tuple[By, str], value: str) -> None:
@@ -96,15 +106,20 @@ class LoginPage(BasePage):
         Returns:
             None
         """
-        assert self.check_if_element_visible(
-            LoginPageLocators.FLD_USERNAME
-        ), 'Поле "Username" не отображается'
-        assert self.check_if_element_visible(
-            LoginPageLocators.FLD_PASSWORD
-        ), 'Поле "Password" не отображается'
-        assert self.check_if_element_visible(
-            LoginPageLocators.FLD_USERNAME_DESCRIPTION
-        ), 'Поле "Username (username description)" не отображается'
+        batch_assert = BatchAssert()
+        batch_assert.check(self.check_if_element_visible(
+                    LoginPageLocators.FLD_USERNAME),
+                    'Поле "Username" не отображается'
+        )
+        batch_assert.check(self.check_if_element_visible(
+                    LoginPageLocators.FLD_PASSWORD),
+                    'Поле "Password" не отображается'
+        )
+        batch_assert.check(self.check_if_element_visible(
+                    LoginPageLocators.FLD_USERNAME_DESCRIPTION),
+                    'Поле "Username (username description)" не отображается'
+        )
+        batch_assert.report()
 
     @allure.step('Проверить некликабельность кнопки "login".')
     def check_login_button_is_not_clickable(self) -> None:
