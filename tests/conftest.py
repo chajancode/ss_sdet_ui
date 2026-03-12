@@ -28,12 +28,12 @@ def driver():
 
 
 @pytest.fixture()
-def main_page(driver: WebDriver) -> MainPage:
+def opened_main_page(driver: WebDriver) -> MainPage:
     page = MainPage(driver)
     return page
 
 
 @pytest.fixture()
-def login_page(driver: WebDriver) -> LoginPage:
+def opened_login_page(driver: WebDriver) -> LoginPage:
     page = LoginPage(driver)
     return page
