@@ -35,7 +35,7 @@ class MainPage(BasePage):
         super().__init__(driver)
         self.url = driver.get(URL_MAIN_PAGE)
 
-    @allure.step('Проверка наличия и соответствия номеров телефонов формату.')
+    @allure.step('Проверить наличие и соответствие номеров телефонов формату.')
     def _validate_phone_numbers(self, contacts: list[WebElement]) -> None:
         """
         Проверяет наличие и корректность номеров телефонов в списке контактов.
@@ -65,7 +65,7 @@ class MainPage(BasePage):
             f'Номера {phone_numbers}'
         )
 
-    @allure.step('Проверка наличия валидных ссылок.')
+    @allure.step('Проверить наличие валидных ссылок.')
     def _validate_links(
             self,
             links: list[WebElement],
@@ -100,7 +100,7 @@ class MainPage(BasePage):
         )
         assert valid_links, f'Ссылка на {link_type} не найдена'
 
-    @allure.step('Проверка валидности ссылки.')
+    @allure.step('Проверить валидность ссылки.')
     def _validate_single_link(
             self,
             element: WebElement,
@@ -130,7 +130,7 @@ class MainPage(BasePage):
         )
         assert href and validator(href), f'Ссылка на {link_type} не найдена'
 
-    @allure.step('Закрытие всплывающего окна при его появлении.')
+    @allure.step('Закрыть всплывающее окно при его появлении.')
     def close_popup(self) -> None:
         """
         Закрывает всплывающее окно, если оно присутствует.
@@ -151,7 +151,7 @@ class MainPage(BasePage):
         except TimeoutException:
             pass
 
-    @allure.step('Проверка отображения хедера.')
+    @allure.step('Проверить отображение хедера.')
     def check_header_is_displayed(self) -> None:
         """
         Проверяет видимость хедера страницы.
@@ -168,7 +168,7 @@ class MainPage(BasePage):
             MainPageLocators.HEADER
             ), 'Хедер не отображается'
 
-    @allure.step('Проверка отображения блока навигации.')
+    @allure.step('Проверить отображение блока навигации.')
     def check_navbar_is_displayed(self) -> None:
         """
         Проверяет видимость блока навигации.
@@ -183,7 +183,7 @@ class MainPage(BasePage):
             MainPageLocators.NAVIGATION_BAR
             ), 'Блок навигации не отображается'
 
-    @allure.step('Проверка отображения списка курсов.')
+    @allure.step('Проверить отображение списка курсов.')
     def check_courses_is_displayed(self) -> None:
         """
         Проверяет видимость списка курсов.
@@ -198,7 +198,7 @@ class MainPage(BasePage):
             MainPageLocators.COURSES_LIST
             ), 'Список с курсами не отображается'
 
-    @allure.step('Проверка отображения футера.')
+    @allure.step('Проверить отображение футера.')
     def check_footer_is_displayed(self) -> None:
         """
         Проверяет видимость футера страницы.
@@ -213,7 +213,7 @@ class MainPage(BasePage):
             MainPageLocators.FOOTER
             ), 'Футер не отображается'
 
-    @allure.step('Проверка отображения контактных данных в хедере.')
+    @allure.step('Проверить отображение контактных данных в хедере.')
     def check_contacts(self) -> None:
         """
         Проверяет отображение и валидность контактных данных в хедере.
@@ -241,7 +241,7 @@ class MainPage(BasePage):
         self._validate_links(contacts, SC.is_skype, 'Skype')
         self._validate_links(contacts, SC.is_email_link, 'Email')
 
-    @allure.step('Проверка отображения ссылок на социальные сети в хедере.')
+    @allure.step('Проверить отображение ссылок на социальные сети в хедере.')
     def check_social_media(self) -> None:
         """
         Проверяет отображение и валидность ссылок на социальные сети.
@@ -271,7 +271,7 @@ class MainPage(BasePage):
                 link, SC.is_social_media, link.get_attribute('aria-label')
             )
 
-    @allure.step('Проверка отображения адреса в футере.')
+    @allure.step('Проверить отображения адреса в футере.')
     def check_footer_address(self) -> None:
         """
         Проверяет наличие адреса в футере.
@@ -293,7 +293,7 @@ class MainPage(BasePage):
         )
         assert address, 'Адрес в футере не найден'
 
-    @allure.step('Проверка телефонных номеров в футере.')
+    @allure.step('Проверить телефонные номера в футере.')
     def check_footer_phone_numbers(self) -> None:
         """
         Проверяет номера телефонов в футере.
@@ -311,7 +311,7 @@ class MainPage(BasePage):
         )
         self._validate_phone_numbers(phone_numbers)
 
-    @allure.step('Проверка email адресов в футере.')
+    @allure.step('Проверить email адреса в футере.')
     def check_footer_emails(self) -> None:
         """
         Проверяет валидность email-адресов в футере.
@@ -333,7 +333,7 @@ class MainPage(BasePage):
         ), 'Не все имейлы соответствуют формату'
 
     @allure.step(
-            'Проверка отображения навигационной панели'
+            'Проверить отображение навигационной панели'
             ' при прокрутке страницы'
         )
     def check_navbar_on_scroll(self, delta_x=0, delta_y=1000) -> None:
@@ -373,7 +373,7 @@ class MainPage(BasePage):
             'Позиция меню навигации не изменилась после скролла.'
         )
 
-    @allure.step('Проверка перехода по меню навигации на другую страницу')
+    @allure.step('Проверить переход по меню навигации на другую страницу')
     def check_navigation_through_navbar(self) -> None:
         """
         Проверяет навигацию по сайту через меню в хедере.

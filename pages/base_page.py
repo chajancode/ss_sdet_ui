@@ -36,7 +36,7 @@ class BasePage:
         self.driver = driver
         self.wait = WebDriverWait(self.driver, wait)
 
-    @allure.step('Поиск элемента: {locator}.')
+    @allure.step('Найти элемент: {locator}.')
     def find_element(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Находит первый элемент, соответствующий локатору, с ожиданием его
@@ -61,7 +61,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
-    @allure.step('Поиск всех элементов: {locator}.')
+    @allure.step('Найти все элементы: {locator}.')
     def find_elements(
                 self, locator: Tuple[By, str]
             ) -> list[WebElement] | None:
@@ -87,7 +87,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
-    @allure.step('Проверка кликабельности элемента: {locator}')
+    @allure.step('Проверить кликабельность элемента: {locator}')
     def is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Проверяет, доступен ли элемент для клика, с ожиданием.
@@ -113,7 +113,7 @@ class BasePage:
         except (TimeoutException, WebDriverException):
             return None
 
-    @allure.step('Клик по элементу: {locator}.')
+    @allure.step('Кликнуть по элементу: {locator}.')
     def click_element(self, locator: Tuple[By, str]) -> WebElement | None:
         """
         Кликает по элементу, если он доступен для клика.
@@ -139,7 +139,7 @@ class BasePage:
         except WebDriverException:
             return None
 
-    @allure.step('Проверка видимости элемента: {locator}.')
+    @allure.step('Проверить видимость элемента: {locator}.')
     def check_if_element_visible(
             self,
             locator: Tuple[By, str]

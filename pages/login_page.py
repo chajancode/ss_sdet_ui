@@ -27,7 +27,7 @@ class LoginPage(BasePage):
         super().__init__(driver)
         self.url = driver.get(URL_LOGIN_PAGE)
 
-    @allure.step('Заполнение поля {locator} значением {value}.')
+    @allure.step('Заполненить поля {locator} значением {value}.')
     def fill_text_form(self, locator: Tuple[By, str], value: str) -> None:
         """
         Заполняет текстовое поле указанным значением.
@@ -42,7 +42,7 @@ class LoginPage(BasePage):
         self.find_element(locator).send_keys(value)
 
     @allure.step(
-            'Выполнение процесса аутентификации.'
+            'Выполненить процесс аутентификации.'
             ' Имя пользователя: {username},'
             ' пароль: {password}'
     )
@@ -82,7 +82,7 @@ class LoginPage(BasePage):
         )
         return self.find_element(msg_locator)
 
-    @allure.step('Проверка видимости обязательных полей формы авторизации')
+    @allure.step('Проверить видимость обязательных полей формы авторизации')
     def check_fields_visibility(self) -> None:
         """
         Проверяет видимость обязательных полей формы авторизации.
@@ -106,7 +106,7 @@ class LoginPage(BasePage):
             LoginPageLocators.FLD_USERNAME_DESCRIPTION
         ), 'Поле "Username (username description)" не отображается'
 
-    @allure.step('Проверка некликабельности кнопки "login".')
+    @allure.step('Проверить некликабельность кнопки "login".')
     def check_login_button_is_not_clickable(self) -> None:
         """
         Проверяет, что кнопка "Login" недоступна для клика.
@@ -122,7 +122,7 @@ class LoginPage(BasePage):
         ), 'Кнопка "Login" кликабельна'
 
     @allure.step(
-            'Проверка входа в систему с валидными данными. '
+            'Проверить вход в систему с валидными данными. '
             ' Имя пользователя: {username}, пароль: {password}.'
             'Ожидаемое сообщение: {msg_expected}.'
     )
@@ -165,7 +165,7 @@ class LoginPage(BasePage):
             raise AssertionError('Не соответствует ожидаемому результату')
 
     @allure.step(
-            'Проверка входа в систему с невалидными данными.'
+            'Проверить вход в систему с невалидными данными.'
             ' Имя пользователя: {username}, пароль: {password}.'
             ' Ожидаемое сообщение: {msg_expected}.'
     )
@@ -206,7 +206,7 @@ class LoginPage(BasePage):
         else:
             raise AssertionError('Не соответствует ожидаемому результату')
 
-    @allure.step('Проверка успешного выхода из системы')
+    @allure.step('Проверить успешный выход из системы')
     def check_logout(self) -> None:
         """
         Проверяет процесс выхода из системы.
