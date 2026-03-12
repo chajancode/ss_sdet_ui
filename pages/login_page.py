@@ -20,8 +20,9 @@ class LoginPage(BasePage):
         """
         Инициализирует страницу авторизации.
 
-        **Args:**
-            - `driver`: Экземпляр класса WebDriver для управления браузером.
+        Args:
+            driver (WebDriver): Экземпляр класса WebDriver
+            для управления браузером.
         """
         super().__init__(driver)
         self.url = driver.get(URL_LOGIN_PAGE)
@@ -31,11 +32,12 @@ class LoginPage(BasePage):
         """
         Заполняет текстовое поле указанным значением.
 
-        Находит элемент по локатору и вводит заданный текст.
+        Args:
+            locator (Tuple[By, str]): Кортеж, определяющий поиск элемента.
+            value (str): Текст, который нужно ввести в поле.
 
-        **Args:**
-            - `locator (Tuple[By, str])`: Кортеж, определяющий поиск элемента.
-            - `value (str)`: Текст, который нужно ввести в поле.
+        Returns:
+            None
         """
         self.find_element(locator).send_keys(value)
 
@@ -53,18 +55,18 @@ class LoginPage(BasePage):
         """
         Выполняет процесс авторизации с указанными данными.
 
-        Заполняет поля логина и пароля, отправляет форму и возвращает
-        элемент с сообщением результата.
-
-        **Args:**
-            - `username (str)`: Имя пользователя для авторизации.
-            - `password (str)`: Пароль пользователя.
-            - `msg_locator (Tuple[By, str])`: Кортеж, определяющий поиск
+        Args:
+            username (str): Имя пользователя для авторизации.
+            password (str): Пароль пользователя.
+            msg_locator (Tuple[By, str]): Кортеж, определяющий поиск
                 элемента с сообщением результата авторизации.
 
-        **Returns:**
-            - `WebElement | None`: Элемент с сообщением результата или `None`,
+        Returns:
+            WebElement | None: Элемент с сообщением результата или `None`,
                 если элемент не найден.
+
+        Returns:
+            None
         """
         self.fill_text_form(
             LoginPageLocators.FLD_USERNAME, username
@@ -85,11 +87,14 @@ class LoginPage(BasePage):
         """
         Проверяет видимость обязательных полей формы авторизации.
 
-        Убеждается, что поля «Username», «Password» и «Username description»
+        Убеждается, что поля "Username", "Password" и "Username description"
         отображаются на странице.
 
-        **Raises:**
-            - `AssertionError`: Если какое‑либо из полей не отображается.
+        Raises:
+            AssertionError: Если какое‑либо из полей не отображается.
+
+        Returns:
+            None
         """
         assert self.check_if_element_visible(
             LoginPageLocators.FLD_USERNAME
@@ -104,12 +109,13 @@ class LoginPage(BasePage):
     @allure.step('Проверка некликабельности кнопки "login".')
     def check_login_button_is_not_clickable(self) -> None:
         """
-        Проверяет, что кнопка «Login» недоступна для клика.
+        Проверяет, что кнопка "Login" недоступна для клика.
 
-        Убеждается, что кнопка не активна (например, при незаполненных полях).
+        Raises:
+            AssertionError: Если кнопка кликабельна.
 
-        **Raises:**
-            - `AssertionError`: Если кнопка кликабельна.
+        Returns:
+            None
         """
         assert not self.click_element(
                 LoginPageLocators.BTN_LOGIN
@@ -126,20 +132,24 @@ class LoginPage(BasePage):
             password: str,
             msg_expected='You\'re logged in!!'
             ) -> None:
-        """Проверяет успешный вход в систему.
+        """
+        Проверяет успешный вход в систему.
 
         Заполняет поля, выполняет логин и убеждается, что появилось
         ожидаемое сообщение об успешном входе.
 
-        **Args:**
-            - `username (str)`: Имя пользователя.
-            - `password (str)`: Пароль.
-            - `msg_expected (str, optional)`: Ожидаемый текст сообщения
-                об успешном входе. По умолчанию — «You're logged in!!».
+        Args:
+            username (str): Имя пользователя.
+            password (str): Пароль.
+            msg_expected (str, optional): Ожидаемый текст сообщения об
+                успешном входе. Значение по умолчанию — "You're logged in!!".
 
-        **Raises:**
-            - `AssertionError`: Если сообщение отсутствует или не соответствует
+        Raises:
+            AssertionError: Если сообщение отсутствует или не соответствует
                 ожидаемому результату.
+
+        Returns:
+            None
         """
         msg = self.do_login(
             username=username,
@@ -169,19 +179,19 @@ class LoginPage(BasePage):
         Проверяет вход в систему с невалидными аргументами имени
         пользователя и пароля.
 
-        Заполняет поля неверными данными, выполняет логин и убеждается,
-        что появилось сообщение об ошибке.
-
-        **Args:**
-            - `username (str)`: Имя пользователя.
-            - `password (str)`: Пароль (неверный).
-            - `msg_expected (str, optional)`: Ожидаемый текст сообщения
+        Args:
+            username (str): Имя пользователя.
+            password (str): Пароль (неверный).
+            msg_expected (str, optional): Ожидаемый текст сообщения
                 об ошибке авторизации. По умолчанию —
-                «Username or password is incorrect».
+                "Username or password is incorrect".
 
-        **Raises:**
-            - `AssertionError`: Если сообщение отсутствует или не соответствует
+        Raises:
+            AssertionError: Если сообщение отсутствует или не соответствует
                 ожидаемому результату.
+
+        Returns:
+            None
         """
         msg = self.do_login(
             username=username,
@@ -201,13 +211,16 @@ class LoginPage(BasePage):
         """
         Проверяет процесс выхода из системы.
 
-        Кликает по кнопке «Logout», затем проверяет, что:
+        Кликает по кнопке "Logout", затем проверяет, что:
         - форма входа снова видна;
-        - кнопка «Login» неактивна при пустых полях.
+        - кнопка "Login" неактивна при пустых полях.
 
-        **Raises:**
-            - `AssertionError`: Если кнопка «Logout» не найдена или не
+        Raises:
+            AssertionError: Если кнопка «Logout» не найдена или не
             кликабельна, либо если последующие проверки не пройдены.
+
+        Returns:
+            None
         """
         logout_btn = self.click_element(
                 LoginPageLocators.BTN_LOGOUT

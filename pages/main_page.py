@@ -25,9 +25,12 @@ class MainPage(BasePage):
         """
         Инициализирует главную страницу.
 
-        **Args:**
-            - `driver (WebDriver)`: Экземпляр класса WebDriver для
-            управления браузером.
+        Args:
+            driver (WebDriver): Экземпляр класса WebDriver для
+            управления браузером
+
+        Returns:
+            None
         """
         super().__init__(driver)
         self.url = driver.get(URL_MAIN_PAGE)
@@ -37,15 +40,16 @@ class MainPage(BasePage):
         """
         Проверяет наличие и корректность номеров телефонов в списке контактов.
 
-        Извлекает тексты элементов и фильтрует их по формату номера телефона.
-
-        **Args:**
-            - `contacts (list[WebElement])`: Список веб‑элементов с
+        Args:
+            contacts (list[WebElement]): Список веб‑элементов с
             контактными данными.
 
-        **Raises:**
-            - `AssertionError`: Если номера телефонов отсутствуют или не
+        Raises:
+            AssertionError: Если номера телефонов отсутствуют или не
             соответствуют формату.
+
+        Returns:
+            None
         """
         phone_numbers = [
             contact.text for contact in contacts
@@ -71,18 +75,18 @@ class MainPage(BasePage):
         """
         Проверяет наличие валидных ссылок в списке элементов.
 
-        Фильтрует элементы по наличию атрибута `href` и результату
-        валидации.
-
-        **Args:**
-            - `links (list[WebElement])`: Список веб‑элементов со ссылками.
-            - `validator (SC)`: Функция‑валидатор для проверки формата
+        Args:
+            list[WebElement]: Список веб‑элементов со ссылками.
+            StringChecker: Функция‑валидатор для проверки формата
             ссылки.
-            - `link_type (str)`: Тип ссылки для сообщения об ошибке
-            (например, «Skype»).
+            str: Тип ссылки для сообщения об ошибке
+            (например, "Skype").
 
-        **Raises:**
-            - `AssertionError`: Если валидные ссылки не найдены.
+        Raises:
+            AssertionError: Если валидные ссылки не найдены.
+
+        Returns:
+            None
         """
         valid_links = [
             link.get_attribute('href') for link in links
@@ -106,17 +110,18 @@ class MainPage(BasePage):
         """
         Проверяет валидность отдельной ссылки.
 
-        Получает атрибут `href` элемента и проверяет его через валидатор.
-
-        **Args:**
-            - `element (WebElement)`: Веб‑элемент со ссылкой.
-            - `validator (SC)`: Функция‑валидатор для проверки формата
+        Args:
+            WebElement: Веб‑элемент со ссылкой.
+            StringChecker: Функция‑валидатор для проверки формата
             ссылки.
-            - `link_type (str)`: Тип ссылки для сообщения об ошибке.
+            str: Тип ссылки для сообщения об ошибке(например, "Skype")
 
-        **Raises:**
-            - `AssertionError`: Если ссылка отсутствует или не проходит
+        Raises:
+            AssertionError: Если ссылка отсутствует или не проходит
             валидацию.
+
+        Returns:
+            None
         """
         href = element.get_attribute('href')
         allure.attach(
@@ -132,6 +137,9 @@ class MainPage(BasePage):
 
         Пытается найти и кликнуть по кнопке закрытия. Если элемент не
         найден в течение таймаута, игнорирует ошибку.
+
+        Returns:
+            None
         """
         try:
             close_button = self.wait.until(
@@ -150,8 +158,11 @@ class MainPage(BasePage):
 
         Убеждается, что хедер отображается на странице.
 
-        **Raises:**
-            - `AssertionError`: Если хедер не отображается.
+        Raises:
+            AssertionError: Если хедер не отображается.
+
+        Returns:
+            None
         """
         assert self.check_if_element_visible(
             MainPageLocators.HEADER
@@ -162,10 +173,11 @@ class MainPage(BasePage):
         """
         Проверяет видимость блока навигации.
 
-        Убеждается, что навигационная панель отображается на странице.
+        Raises:
+            AssertionError: Если блок навигации не отображается.
 
-        **Raises:**
-            - `AssertionError`: Если блок навигации не отображается.
+        Returns
+            None
         """
         assert self.check_if_element_visible(
             MainPageLocators.NAVIGATION_BAR
@@ -176,10 +188,11 @@ class MainPage(BasePage):
         """
         Проверяет видимость списка курсов.
 
-        Убеждается, что список курсов отображается на странице.
+        Raises:
+            AssertionError: Если список курсов не отображается.
 
-        **Raises:**
-            - `AssertionError`: Если список курсов не отображается.
+        Returns:
+            None
         """
         assert self.check_if_element_visible(
             MainPageLocators.COURSES_LIST
@@ -190,10 +203,11 @@ class MainPage(BasePage):
         """
         Проверяет видимость футера страницы.
 
-        Убеждается, что футер отображается на странице.
+        Raises:
+            AssertionError: Если футер не отображается.
 
-        **Raises:**
-            - `AssertionError`: Если футер не отображается.
+        Returns:
+            None
         """
         assert self.check_if_element_visible(
             MainPageLocators.FOOTER
@@ -209,9 +223,12 @@ class MainPage(BasePage):
         - наличие номеров телефонов;
         - валидность ссылок на Skype и Email.
 
-        **Raises:**
-            - `AssertionError`: Если контакты не отображаются или не
+        Raises:
+            AssertionError: Если контакты не отображаются или не
             проходят валидацию.
+
+        Returns:
+            None
         """
         contacts = self.find_elements(
             MainPageLocators.HEADER_CONTACTS
@@ -234,8 +251,11 @@ class MainPage(BasePage):
         - у всех есть атрибут `href`;
         - ссылки проходят валидацию по формату соцсетей.
 
-        **Raises:**
-            - `AssertionError`: Если соцсети не найдены или ссылки невалидны.
+        Raises:
+            AssertionError: Если соцсети не найдены или ссылки невалидны.
+
+        Returns:
+            None
         """
         social_media = self.find_elements(
             MainPageLocators.HEADER_SOCIAL_MEDIA
@@ -256,10 +276,11 @@ class MainPage(BasePage):
         """
         Проверяет наличие адреса в футере.
 
-        Использует JS-скрипт для получения текста адреса.
+        Raises:
+            AssertionError: Если адрес не найден.
 
-        **Raises:**
-            - `AssertionError`: Если адрес не найден.
+        Returns:
+            None
         """
         address_element = self.wait.until(EC.visibility_of_element_located(
                 (
@@ -279,8 +300,11 @@ class MainPage(BasePage):
 
         Находит элементы с номерами телефонов и проверяет их валидность.
 
-        **Raises:**
-            - `AssertionError`: Если номера не соответствуют формату.
+        Raises:
+            AssertionError: Если номера не соответствуют формату.
+
+        Returns:
+            None
         """
         phone_numbers = self.find_elements(
             MainPageLocators.FOOTER_PHONE_NUMBERS
@@ -295,8 +319,11 @@ class MainPage(BasePage):
         Находит элементы с email-адресами и убеждается, что все они
         соответствуют формату email.
 
-        **Raises:**
-            - `AssertionError`: Если какой‑либо email не соответствует формату.
+        Raises:
+            AssertionError: Если какой‑либо email не соответствует формату.
+
+        Returns:
+            None
         """
         emails = self.find_elements(
             MainPageLocators.FOOTER_EMAILS
@@ -316,15 +343,18 @@ class MainPage(BasePage):
         Выполняет скролл страницы на `delta_y` пикселей и убеждается, что
         позиция навигационной панели не изменилась (панель зафиксирована).
 
-        **Args:**
-            - `delta_x (int, optional)`: Смещение по горизонтали.
+        Args:
+            delta_x (int, optional): Смещение по горизонтали.
             По умолчанию — 0.
-            - `delta_y (int, optional)`: Смещение по вертикали.
+            delta_y (int, optional): Смещение по вертикали.
             По умолчанию — 1000 px.
 
-        **Raises:**
-            - `AssertionError`: Если позиция меню навигации изменилась после
+        Raises:
+            AssertionError: Если позиция меню навигации изменилась после
             скролла.
+
+        Returns:
+            None
         """
         navbar = self.check_if_element_visible(
             MainPageLocators.NAVIGATION_BAR
@@ -350,16 +380,19 @@ class MainPage(BasePage):
 
         Выполняет следующие действия:
         1. Закрывает всплывающее окно (если есть).
-        2. Кликает по пункту «All courses».
-        3. Кликает по подпункту «Lifetime Membership».
-        4. Проверяет, что открылся раздел «Lifetime Membership Club».
+        2. Кликает по пункту "All courses".
+        3. Кликает по подпункту "Lifetime Membership".
+        4. Проверяет, что открылся раздел "Lifetime Membership Club".
         5. Убеждается, что заголовок страницы соответствует ожидаемому.
 
-        **Raises:**
-            - `AssertionError`: Если:
-                * пункт меню недоступен;
-                * заголовок страницы не соответствует ожидаемому
-                («LIFETIME MEMBERSHIP CLUB»).
+        Raises:
+            AssertionError: Если:
+                - пункт меню недоступен;
+                - заголовок страницы не соответствует ожидаемому
+                ("LIFETIME MEMBERSHIP CLUB").
+
+        Returns:
+            None
         """
         self.close_popup()
 
