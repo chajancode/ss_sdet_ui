@@ -8,7 +8,9 @@ from selenium.webdriver.remote.webelement import WebElement
 
 
 from config.params import URL_MAIN_PAGE
-from locators.locators import LifetimeMembershipPageLocators
+from locators.lifetime_membership_page_locators import (
+                            LifetimeMembershipPageLocators
+)
 from locators.main_page_locators import MainPageLocators
 from pages.base_page import BasePage
 from utils.js_scripts import FOOTER_ADDRESS_SCRIPT

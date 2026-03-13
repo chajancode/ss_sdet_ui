@@ -43,7 +43,7 @@ class BasePage(ABC):
         Абстрактный метод открытия страницы.
 
         Raises:
-            NotImplementedError: если метод не реализован в дочернем классе.
+            NotImplementedError: если метод не реализован в дочернем класс
         """
 
     @allure.step('Найти элемент: {locator}.')
@@ -83,7 +83,7 @@ class BasePage(ABC):
         в течение заданного таймаута, возвращает `None`.
 
         Args:
-            locator (Tuple[By, str]): Кортеж, определяющий поиск, и локатор 
+            locator (Tuple[By, str]): Кортеж, определяющий поиск, и локатор
                     элементов (например, `(By.CLASS_NAME, "my_class")`).
 
         Returns:
