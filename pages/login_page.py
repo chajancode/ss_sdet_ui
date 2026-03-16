@@ -37,7 +37,7 @@ class LoginPage(BasePage):
         """
         self.url = self.driver.get(URL_LOGIN_PAGE)
 
-    @allure.step('Заполненить поля {locator} значением {value}.')
+    @allure.step('Заполнить поля {locator} значением {value}.')
     def fill_text_form(self, locator: Tuple[By, str], value: str) -> None:
         """
         Заполняет текстовое поле указанным значением.
@@ -136,91 +136,6 @@ class LoginPage(BasePage):
                 LoginPageLocators.BTN_LOGIN
         ), 'Кнопка "Login" кликабельна'
 
-    @allure.step(
-            'Проверить вход в систему с валидными данными. '
-            ' Имя пользователя: {username}, пароль: {password}.'
-            'Ожидаемое сообщение: {msg_expected}.'
-    )
-    def check_fill_fields_and_login_success(
-            self,
-            username: str,
-            password: str,
-            msg_expected='You\'re logged in!!'
-            ) -> None:
-        """
-        Проверяет успешный вход в систему.
-
-        Заполняет поля, выполняет логин и убеждается, что появилось
-        ожидаемое сообщение об успешном входе.
-
-        Args:
-            username (str): Имя пользователя.
-            password (str): Пароль.
-            msg_expected (str, optional): Ожидаемый текст сообщения об
-                успешном входе. Значение по умолчанию — "You're logged in!!".
-
-        Raises:
-            AssertionError: Если сообщение отсутствует или не соответствует
-                ожидаемому результату.
-
-        Returns:
-            None
-        """
-        msg = self.do_login(
-            username=username,
-            password=password,
-            msg_locator=LoginPageLocators.MSG_LOGGED_IN
-        )
-        if msg:
-            assert msg.text == msg_expected, (
-                f'Сообщение не появилось или не соответствует ожидаемому. '
-                f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
-            )
-        else:
-            raise AssertionError('Не соответствует ожидаемому результату')
-
-    @allure.step(
-            'Проверить вход в систему с невалидными данными.'
-            ' Имя пользователя: {username}, пароль: {password}.'
-            ' Ожидаемое сообщение: {msg_expected}.'
-    )
-    def check_fill_fields_and_login_fail(
-            self,
-            username: str,
-            password: str,
-            msg_expected='Username or password is incorrect',
-            ) -> None:
-        """
-        Проверяет вход в систему с невалидными аргументами имени
-        пользователя и пароля.
-
-        Args:
-            username (str): Имя пользователя.
-            password (str): Пароль (неверный).
-            msg_expected (str, optional): Ожидаемый текст сообщения
-                об ошибке авторизации. По умолчанию —
-                "Username or password is incorrect".
-
-        Raises:
-            AssertionError: Если сообщение отсутствует или не соответствует
-                ожидаемому результату.
-
-        Returns:
-            None
-        """
-        msg = self.do_login(
-            username=username,
-            password=password,
-            msg_locator=LoginPageLocators.MSG_AUTH_ERROR
-        )
-        if msg:
-            assert msg.text == msg_expected, (
-                f'Сообщение не появилось или не соответствует ожидаемому. '
-                f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
-            )
-        else:
-            raise AssertionError('Не соответствует ожидаемому результату')
-
     @allure.step('Проверить успешный выход из системы')
     def check_logout(self) -> None:
         """
@@ -246,3 +161,52 @@ class LoginPage(BasePage):
             )
         self.check_fields_visibility()
         self.check_login_button_is_not_clickable()
+
+    @allure.step(
+            '{step_name}'
+            ' Имя пользователя: {username}, пароль: {password}.'
+            ' Ожидаемое сообщение: {msg_expected}.'
+    )
+    def check_login(
+            self,
+            username: str,
+            password: str,
+            msg_expected: str,
+            test_type: str,
+            step_name: str # noqa
+            ) -> None:
+        """
+        Проверяет вход в систему с различными наборами тестовых данных
+        (валидными и невалидными)
+
+        Args:
+            username (str): Имя пользователя.
+            password (str): Пароль (неверный).
+            msg_expected (str): Ожидаемый текст сообщения
+                об ошибке авторизации.
+            test_type (str): Тип проверки ('success' или 'fail').
+            step_name (str): Название шага для отчёта Allure.
+
+        Raises:
+            AssertionError: Если сообщение отсутствует или не соответствует
+                ожидаемому результату.
+
+        Returns:
+            None
+        """
+        match test_type:
+            case 'success': msg_locator = LoginPageLocators.MSG_LOGGED_IN
+            case 'fail': msg_locator = LoginPageLocators.MSG_AUTH_ERROR
+
+        msg = self.do_login(
+            username=username,
+            password=password,
+            msg_locator=msg_locator
+        )
+        if msg:
+            assert msg.text == msg_expected, (
+                f'Сообщение не появилось или не соответствует ожидаемому. '
+                f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
+            )
+        else:
+            raise AssertionError('Не соответствует ожидаемому результату.')

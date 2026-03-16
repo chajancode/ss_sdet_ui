@@ -28,7 +28,7 @@ def driver():
 
 
 @pytest.fixture()
-def opened_main_page(driver: WebDriver) -> MainPage:
+def main_page(driver: WebDriver) -> MainPage:
     page = MainPage(driver)
     return page
 
