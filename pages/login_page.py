@@ -37,7 +37,7 @@ class LoginPage(BasePage):
         """
         self.url = self.driver.get(URL_LOGIN_PAGE)
 
-    @allure.step('Заполненить поля {locator} значением {value}.')
+    @allure.step('Заполнить поля {locator} значением {value}.')
     def fill_text_form(self, locator: Tuple[By, str], value: str) -> None:
         """
         Заполняет текстовое поле указанным значением.
