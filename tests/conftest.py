@@ -1,4 +1,5 @@
 import pytest
+import allure
 
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
@@ -28,7 +29,7 @@ def driver():
 
 
 @pytest.fixture()
-def main_page(driver: WebDriver) -> MainPage:
+def opened_main_page(driver: WebDriver) -> MainPage:
     page = MainPage(driver)
     return page
 
@@ -37,3 +38,21 @@ def main_page(driver: WebDriver) -> MainPage:
 def opened_login_page(driver: WebDriver) -> LoginPage:
     page = LoginPage(driver)
     return page
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(
+                item: pytest.Item,
+                call: pytest.CallInfo
+            ):
+    outcome = yield
+    report: pytest.TestReport = outcome.get_result()
+    driver: WebDriver = item.funcargs['driver']
+
+    if report.when == 'call' and report.failed:
+        screenshot = driver.get_screenshot_as_png()
+        screenshot_name = f'Ошибка в тесте: {item.name}'
+        allure.attach(
+            screenshot,
+            name=screenshot_name
+        )

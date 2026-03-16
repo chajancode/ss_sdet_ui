@@ -23,7 +23,9 @@ class TestLoginPage:
         '  Кнопка "login" неактивна при незаполненных полях'
     )
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_authentication_fields(self, opened_login_page: LoginPage) -> None:
+    def test_authentication_fields(
+                self, opened_login_page: LoginPage, driver
+            ) -> None:
         opened_login_page.check_fields_visibility()
         opened_login_page.check_login_button_is_not_clickable()
 
@@ -36,7 +38,8 @@ class TestLoginPage:
     def test_login(
                 self,
                 opened_login_page: LoginPage,
-                test_data: LoginTestData
+                test_data: LoginTestData,
+                driver
             ) -> None:
         opened_login_page.check_login(**test_data.to_dict())
 

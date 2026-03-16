@@ -223,7 +223,7 @@ class MainPage(BasePage):
             None
         """
         assert self.check_if_element_visible(
-            MainPageLocators.FOOTER
+            MainPageLocators.CLOSE_POPUP
             ), 'Футер не отображается'
 
     @allure.step('Проверить отображение контактных данных в хедере.')
