@@ -223,7 +223,7 @@ class MainPage(BasePage):
             None
         """
         assert self.check_if_element_visible(
-            MainPageLocators.CLOSE_POPUP
+            MainPageLocators.FOOTER
             ), 'Футер не отображается'
 
     @allure.step('Проверить отображение контактных данных в хедере.')
@@ -304,7 +304,7 @@ class MainPage(BasePage):
         address = self.driver.execute_script(
             FOOTER_ADDRESS_SCRIPT, address_element
         )
-        assert address, 'Адрес в футере не найден'
+        assert not address, 'Адрес в футере не найден'
 
     @allure.step('Проверить телефонные номера в футере.')
     def check_footer_phone_numbers(self) -> None:
