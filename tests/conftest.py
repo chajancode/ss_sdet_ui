@@ -8,6 +8,7 @@ from selenium.webdriver.chrome.options import Options
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from config.params import USER_AGENT
+from pages.sqlex_page import SqlexPage
 
 
 @pytest.fixture(scope='session')
@@ -37,6 +38,12 @@ def opened_main_page(driver: WebDriver) -> MainPage:
 @pytest.fixture()
 def opened_login_page(driver: WebDriver) -> LoginPage:
     page = LoginPage(driver)
+    return page
+
+
+@pytest.fixture()
+def opened_sqlex_page(driver: WebDriver) -> SqlexPage:
+    page = SqlexPage(driver)
     return page
 
 

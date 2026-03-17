@@ -21,7 +21,7 @@ class SqlexPage(BasePage):
         """
         super().__init__(driver, wait)
 
-    @allure.step('Открыть страницу {URL_SQLEX_PAGE}')
+    @allure.step('Открыть страницу')
     def open(self) -> None:
         """
         Открывает сраницу Sql-ex.ru
@@ -34,7 +34,7 @@ class SqlexPage(BasePage):
     @allure.step('Залогиниться через куки.')
     def _login_with_cookies(self, expected_username: str) -> bool:
         """
-        Логинится через куки. Если пользовательская сессия активна.
+        Логинится через куки, если пользовательская сессия активна.
 
         Args:
             expected_username (str): Ожидаемый логин на странице, с
@@ -44,13 +44,16 @@ class SqlexPage(BasePage):
             bool
         """
         try:
-            cookie = CookieTools.set_cookie(
-                self.driver, URL_SQLEX_INDEX, FILE_SQLX_COOKIES
-            )
+            with allure.step('Проверить наличие активной сессии.'):
+                cookie = CookieTools.set_cookie(
+                    self.driver, URL_SQLEX_INDEX, FILE_SQLX_COOKIES
+                )
             if cookie:
-                self.driver.refresh()
-                is_logged_in = self._find_element(SqlexLocators.USERNAME)
+                with allure.step('Обновить страницу с установленной кукой.'):
+                    self.driver.refresh()
+                is_logged_in = self.find_element(SqlexLocators.USERNAME)
                 if is_logged_in.text == expected_username:
+                    allure.step('Войти через куку.')
                     return True
         except (TimeoutException, NoSuchElementException):
             return False
@@ -78,16 +81,17 @@ class SqlexPage(BasePage):
             return True
 
         try:
-            self._find_element(SqlexLocators.FLD_LOGIN).send_keys(login)
-            self._find_element(SqlexLocators.FLD_PASSWORD).send_keys(password)
-            self._click_element(SqlexLocators.BTN_LOGIN)
+            self.find_element(SqlexLocators.FLD_LOGIN).send_keys(login)
+            self.find_element(SqlexLocators.FLD_PASSWORD).send_keys(password)
+            self.click_element(SqlexLocators.BTN_LOGIN)
 
-            is_logged_in = self._check_if_element_visible(
+            is_logged_in = self.check_if_element_visible(
                 SqlexLocators.USERNAME
             )
             if is_logged_in.text == expected_nickname:
-                CookieTools.save_cookies(self.driver, FILE_SQLX_COOKIES)
-                return True
+                with allure.step('Сохранить данные сессии.'):
+                    CookieTools.save_cookies(self.driver, FILE_SQLX_COOKIES)
+                    return True
         except (TimeoutException, NoSuchElementException):
             return False
         return False

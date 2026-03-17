@@ -24,9 +24,9 @@ class CookieTools():
                     (по умолчанию: 24 минуты).
 
         Returns:
-            tuple[bool, Optional[dict | None]]: Кортеж со значением True и 
-                идентификатором сессии, если сессия активна.
-                Иначе False и None.
+            tuple[bool, Optional[dict | None]]: Кортеж со значением True и
+                 идентификатором сессии, если сессия активна.
+                 Иначе False и None.
         """
         try:
             with open(filename, 'r') as file:
