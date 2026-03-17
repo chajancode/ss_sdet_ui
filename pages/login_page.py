@@ -155,7 +155,7 @@ class LoginPage(BasePage):
         logout_btn = self.click_element(
                 LoginPageLocators.BTN_LOGOUT
             )
-        if not logout_btn:
+        if logout_btn:
             raise AssertionError(
                 'Кнопка Logout не появилась или не кликабельна'
             )

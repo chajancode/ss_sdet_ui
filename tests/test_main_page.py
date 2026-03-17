@@ -4,7 +4,7 @@ import allure
 from pages.main_page import MainPage
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='function')
 def opened_main_page(request, opened_main_page: MainPage):
     opened_main_page.open()
     request.cls.login_page = opened_main_page
@@ -19,7 +19,9 @@ class TestMainPage:
         'Проверка отображения всех элементов главной страницы'
     )
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_main_page_elements(self, opened_main_page: MainPage) -> None:
+    def test_main_page_elements(
+                self, opened_main_page: MainPage, driver
+            ) -> None:
         opened_main_page.check_header_is_displayed()
         opened_main_page.check_navbar_is_displayed()
         opened_main_page.check_courses_is_displayed()
@@ -31,7 +33,9 @@ class TestMainPage:
         ' и ссылки на соцсети.'
     )
     @allure.severity(allure.severity_level.NORMAL)
-    def test_check_header_contacts(self, opened_main_page: MainPage) -> None:
+    def test_check_header_contacts(
+                self, opened_main_page: MainPage, driver
+            ) -> None:
         opened_main_page.check_contacts()
         opened_main_page.check_social_media()
 
@@ -41,7 +45,9 @@ class TestMainPage:
         ' в футере.'
     )
     @allure.severity(allure.severity_level.NORMAL)
-    def test_check_footer_contacts(self, opened_main_page: MainPage) -> None:
+    def test_check_footer_contacts(
+                self, opened_main_page: MainPage, driver
+            ) -> None:
         opened_main_page.check_footer_address()
         opened_main_page.check_footer_phone_numbers()
         opened_main_page.check_footer_emails()
@@ -51,7 +57,9 @@ class TestMainPage:
         'Проверка отображения меню навигации при скроллинге страницы вниз'
     )
     @allure.severity(allure.severity_level.NORMAL)
-    def test_navbar_on_scroll(self, opened_main_page: MainPage) -> None:
+    def test_navbar_on_scroll(
+                self, opened_main_page: MainPage, driver
+            ) -> None:
         opened_main_page.check_navbar_on_scroll()
 
     @allure.title(
@@ -62,6 +70,6 @@ class TestMainPage:
     )
     @allure.severity(allure.severity_level.BLOCKER)
     def test_transition_through_navbar(
-            self, opened_main_page: MainPage
+                self, opened_main_page: MainPage, driver
             ) -> None:
         opened_main_page.check_navigation_through_navbar()
