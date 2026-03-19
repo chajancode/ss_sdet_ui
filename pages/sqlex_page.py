@@ -31,7 +31,7 @@ class SqlexPage(BasePage):
         """
         self.driver.get(URL_SQLEX_PAGE)
 
-    @allure.step('Залогиниться через куки.')
+    @allure.step('Попробовать залогиниться через куки.')
     def _login_with_cookies(self, expected_username: str) -> bool:
         """
         Логинится через куки, если пользовательская сессия активна.
