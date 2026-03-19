@@ -46,7 +46,7 @@ class MainPage(BasePage):
         Returns:
             None
         """
-        self.url = self.driver.get(URL_MAIN_PAGE)
+        self.driver.get(URL_MAIN_PAGE)
 
     @allure.step('Проверить наличие и соответствие номеров телефонов формату.')
     def _validate_phone_numbers(self, contacts: list[WebElement]) -> None:
@@ -304,7 +304,7 @@ class MainPage(BasePage):
         address = self.driver.execute_script(
             FOOTER_ADDRESS_SCRIPT, address_element
         )
-        assert not address, 'Адрес в футере не найден'
+        assert address, 'Адрес в футере не найден'
 
     @allure.step('Проверить телефонные номера в футере.')
     def check_footer_phone_numbers(self) -> None:

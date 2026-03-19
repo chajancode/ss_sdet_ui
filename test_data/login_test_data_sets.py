@@ -1,4 +1,9 @@
-from test_data.login_test_data_model import LoginTestData
+import os
+from dotenv import load_dotenv
+
+from test_data.login_test_data_model import LoginTestData, SqlexLoginData
+
+load_dotenv()
 
 
 VALID_LOGIN_DATA = LoginTestData(
@@ -15,6 +20,11 @@ INVALID_LOGIN_DATA = LoginTestData(
     test_type='fail',
     step_name='Проверить вход в систему с невалидными данными.'
 )
+SQLEX_LOGIN_DATA = [SqlexLoginData(
+    login=os.getenv('LOGIN'),
+    password=os.getenv('PASSWORD'),
+    expected_nickname='chajan'
+)]
 
 
 def collect_datasets() -> list[LoginTestData]:

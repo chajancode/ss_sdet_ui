@@ -28,3 +28,13 @@ class LoginTestData:
             dict[str, Any]
         """
         return asdict(self)
+
+
+@dataclass
+class SqlexLoginData:
+    login: str
+    password: str
+    expected_nickname: str
+
+    def to_dict(self):
+        return asdict(self)
