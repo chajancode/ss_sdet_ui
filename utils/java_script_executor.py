@@ -2,6 +2,8 @@ from typing import Any
 
 from selenium.webdriver.remote.webdriver import WebDriver
 
+from utils.js_scripts import HAS_VERTICAL_SCROLL_SCRIPT, UNFOCUS_ELEMENT_SCRIPT
+
 
 def unfocus_element(driver: WebDriver, argument: str) -> tuple[str | bool]:
     """
@@ -16,21 +18,7 @@ def unfocus_element(driver: WebDriver, argument: str) -> tuple[str | bool]:
             проверки (True - фокус убран,
             False - фокус не убран/не найден элемент.)
     """
-    result = driver.execute_script(
-        """
-        var element = document.querySelector(arguments[0]);
-        if (!element) {
-            return ['Элемент не найден.', false];
-        }
-        if (element === document.activeElement) {
-            element.blur();
-            return ['Убран фокус с элемента.', true];
-        } else {
-            return ['Нет фокуса на элементе.'];
-        }
-        """,
-        argument
-    )
+    result = driver.execute_script(UNFOCUS_ELEMENT_SCRIPT, argument)
     return tuple(result)
 
 
@@ -44,10 +32,5 @@ def has_scroll(driver: WebDriver) -> Any:
     Returns:
         Any
     """
-    result = driver.execute_script(
-        """
-         return document.documentElement.scrollHeight >
-                document.documentElement.clientHeight;
-        """
-    )
+    result = driver.execute_script(HAS_VERTICAL_SCROLL_SCRIPT)
     return result

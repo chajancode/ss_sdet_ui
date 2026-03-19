@@ -5,6 +5,7 @@ from pages.base_page import BasePage
 from utils.cookie_tools import CookieTools
 from locators.sqlex_page_locators import SqlexLocators
 from config.params import URL_SQLEX_PAGE, URL_SQLEX_INDEX, FILE_SQLX_COOKIES
+from utils.java_script_executor import has_scroll, unfocus_element
 
 
 class SqlexPage(BasePage):
@@ -95,3 +96,34 @@ class SqlexPage(BasePage):
         except (TimeoutException, NoSuchElementException):
             return False
         return False
+
+    @allure.step('Убрать фокус из поля ввода.')
+    def unfocus_field(self) -> tuple[str | bool]:
+        """
+        Убирает фокус с поля ввода логина.
+        """
+        locator = SqlexLocators.FLD_LOGIN
+
+        if self.find_element(locator):
+
+            result = unfocus_element(self.driver, locator)
+
+            allure.attach(
+                f'Результат: {result}',
+                attachment_type=allure.attachment_type.TEXT
+            )
+            return result
+        return ('Поле логина не найдено', False)
+
+    @allure.step('Определить наличие скролла на странице')
+    def page_has_scroll(self) -> None:
+        """
+        Определяет наличие скролла на странице.
+        """
+        result = has_scroll(self.driver)
+
+        allure.attach(
+            f'Результат: {result}',
+            attachment_type=allure.attachment_type.TEXT
+        )
+        return result
