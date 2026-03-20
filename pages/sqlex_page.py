@@ -113,7 +113,7 @@ class SqlexPage(BasePage):
                 attachment_type=allure.attachment_type.TEXT
             )
             return result
-        return ('Поле логина не найдено', False)
+        return 'Поле логина не найдено', False
 
     @allure.step('Определить наличие скролла на странице')
     def page_has_scroll(self) -> None:

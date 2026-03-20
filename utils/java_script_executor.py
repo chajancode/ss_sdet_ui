@@ -19,7 +19,7 @@ def unfocus_element(driver: WebDriver, argument: str) -> tuple[str | bool]:
             False - фокус не убран/не найден элемент.)
     """
     result = driver.execute_script(UNFOCUS_ELEMENT_SCRIPT, argument)
-    return tuple(result)
+    return result
 
 
 def has_scroll(driver: WebDriver) -> Any:
