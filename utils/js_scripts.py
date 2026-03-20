@@ -6,3 +6,19 @@ FOOTER_ADDRESS_SCRIPT = """
     }
     return '';
 """
+UNFOCUS_ELEMENT_SCRIPT = """
+    var element = document.querySelector(arguments[0]);
+    if (!element) {
+        return ['Элемент не найден.', false];
+    }
+    if (element === document.activeElement) {
+        element.blur();
+        return ['Убран фокус с элемента.', true];
+    } else {
+        return ['Нет фокуса на элементе.'];
+    }
+"""
+HAS_VERTICAL_SCROLL_SCRIPT = """
+        return document.documentElement.scrollHeight >
+            document.documentElement.clientHeight;
+"""
