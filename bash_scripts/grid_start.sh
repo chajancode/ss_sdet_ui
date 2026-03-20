@@ -16,3 +16,6 @@ echo "Запуск тестов."
 pytest -n auto --dist=loadscope --alluredir=./allure-results
 
 echo "Тесты завершены."
+echo
+echo "Завершение работы сервера."
+pkill -f selenium-server
