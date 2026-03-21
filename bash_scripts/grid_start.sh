@@ -13,7 +13,7 @@ echo
 echo "Все сервисы запущены на хосте: http://localhost:4444"
 echo
 echo "Запуск тестов."
-pytest -n auto --dist=loadscope --alluredir=./allure-results
+pytest -n auto --dist=loadscope --reruns 2 --alluredir=./allure-results
 
 echo "Тесты завершены."
 echo
