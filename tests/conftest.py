@@ -1,30 +1,58 @@
 import pytest
 import allure
 
-from selenium import webdriver
-from selenium.webdriver.chrome.webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 
-from config.browser_options import get_chrome_options
+from config.drivers import BROWSERS, DriverFactory
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
-from config.params import URL_GRID
 from pages.sqlex_page import SqlexPage
 
 
+def pytest_addoption(parser: pytest.Parser):
+    parser.addoption(
+        '--grid',
+        action='store_true',
+        help='Запуск тестов в Selenium Grid'
+    )
+    parser.addoption(
+        '--browser',
+        default='chrome',
+        help=(
+            'Имя браузера. По умолчанию \'chrome\'.'
+            ' \'all\' запускает все браузеры.'
+        )
+    )
+
+
+def pytest_generate_tests(metafunc):
+    if 'browser_name' in metafunc.fixturenames:
+        browser = metafunc.config.getoption('--browser')
+
+        if browser == 'all':
+            browsers = BROWSERS
+            metafunc.parametrize('browser_name', browsers)
+        else:
+            metafunc.parametrize('browser_name', [browser])
+
+
 @pytest.fixture
-def selenium_grid_url(scope='session'):
-    return URL_GRID
+def browser_name(request: pytest.FixtureRequest):
+    if hasattr(request, 'param'):
+        return request.param
+    return request.config.getoption('--browser')
 
 
 @pytest.fixture(scope='function')
-def driver(selenium_grid_url):
-    chrome_options = get_chrome_options()
-    driver = webdriver.Remote(
-        command_executor=selenium_grid_url,
-        options=chrome_options
-    )
-    yield driver
-    driver.quit()
+def driver(request: pytest.FixtureRequest, browser_name: str):
+    grid_mode = request.config.getoption('--grid')
+    driver = None
+    try:
+        driver = DriverFactory.create_driver(browser_name, grid_mode)
+        yield driver
+    finally:
+        if driver:
+            driver.quit()
 
 
 @pytest.fixture()
