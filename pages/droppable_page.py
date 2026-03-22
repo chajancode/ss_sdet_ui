@@ -8,7 +8,19 @@ from locators.droppable_page_locators import DroppablePageLocators
 
 
 class DroppablePage(BasePage):
+    """
+    Страница для упражнения на перетаскивание элементов.
+    """
     def __init__(self, driver):
+        """
+        Инициализирует страницу авторизации.
+
+        Args:
+            driver (WebDriver): Экземпляр класса WebDriver
+            для управления браузером.
+            action (ActionChains): Экземпляр класса ActionCahins
+            для выполнения действий на странице.
+        """
         super().__init__(driver)
         self.action = ActionChains(self.driver)
 
@@ -24,11 +36,23 @@ class DroppablePage(BasePage):
 
     @allure.step('Переключиться на iframe')
     def switch_to_frame(self):
+        """
+        Переключает контекст на iframe, содержащий элементы для drag and drop.
+
+        Returns:
+            None
+        """
         frame = self.find_element(DroppablePageLocators.FRAME_DROPPABLE)
         self.driver.switch_to.frame(frame)
 
     @allure.step('Перетащить элемент в принимающий')
     def drag_and_drop_element(self):
+        """
+        Выполняет операцию drag and drop (перетаскивание) элемента.
+
+        Returns:
+            None
+        """
         to_be_dragged = self.find_element(
             DroppablePageLocators.ELMNT_TO_BE_DRAGGED
         )
@@ -39,6 +63,23 @@ class DroppablePage(BasePage):
 
     @allure.step('Проверить изменился ли текст в принимающем элементе')
     def check_text(self, expected_text: str):
+        """
+        Проверяет, изменился ли текст в принимающем элементе
+        после drag and drop.
+
+        Метод получает текущий текст из целевого элемента и сравнивает его
+        с ожидаемым значением.
+
+        Args:
+            expected_text (str): Ожидаемый текст, который должен появиться
+                в принимающем элементе после перетаскивания.
+
+        Returns:
+            None
+
+        Raises:
+            AssertionError: Если текст в элементе не соответствует ожидаемому
+        """
         current_text = self.find_element(
                 DroppablePageLocators.ELMNT_WHERE_TO_DRAG
             ).text
