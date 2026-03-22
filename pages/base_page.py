@@ -6,7 +6,12 @@ from selenium.webdriver.chrome .webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
-from selenium.common import TimeoutException, WebDriverException
+from selenium.webdriver.common.alert import Alert
+from selenium.common import (
+    NoSuchElementException,
+    TimeoutException,
+    WebDriverException
+)
 from selenium.webdriver.support import expected_conditions as EC
 
 
@@ -174,3 +179,40 @@ class BasePage(ABC):
                 )
         except (TimeoutException, WebDriverException):
             return None
+
+    @allure.step('Переключить контекст на iframe.')
+    def switch_to_frame(self, locator: tuple[By, str]):
+        """
+        Переключает контекст на iframe.
+
+        Args:
+            locator (tuple[By, str]): Локатор iframe.
+        Returns:
+            None
+        """
+        try:
+            frame = self.find_element(locator)
+            self.driver.switch_to.frame(frame)
+        except (TimeoutException, NoSuchElementException) as e:
+            raise AssertionError(
+                f'Не удалось переключиться на iframe: {e}'
+            ) from e
+
+    @allure.step('Проверить появление алерта.')
+    def is_alert_present(self) -> Alert:
+        """
+        Проверяет появление алерта.
+
+        Returns:
+            alert (Alert): Экземпляр класса Alert.
+
+        Raises:
+            AssertionError: Если алерт не появился.
+        """
+        try:
+            alert = self.wait.until(EC.alert_is_present())
+        except (TimeoutException, NoSuchElementException) as e:
+            raise AssertionError(
+                f'Алерт не появился: {e} '
+            ) from e
+        return alert
