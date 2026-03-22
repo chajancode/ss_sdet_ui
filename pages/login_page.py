@@ -4,7 +4,7 @@ import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
-from config.pages_urls import URL_LOGIN_PAGE
+from config.params import URL_LOGIN_PAGE
 from locators.login_page_locators import LoginPageLocators
 from pages.base_page import BasePage
 from utils.batch_assert import BatchAssert

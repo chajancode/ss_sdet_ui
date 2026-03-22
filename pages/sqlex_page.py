@@ -1,11 +1,10 @@
 import allure
 from selenium.common import TimeoutException, NoSuchElementException
 
-from config.pages_urls import URL_SQLEX_INDEX, URL_SQLEX_PAGE
 from pages.base_page import BasePage
 from utils.cookie_tools import CookieTools
 from locators.sqlex_page_locators import SqlexLocators
-from config.params import FILE_SQLX_COOKIES
+from config.params import URL_SQLEX_PAGE, URL_SQLEX_INDEX, FILE_SQLX_COOKIES
 from utils.java_script_executor import has_scroll, unfocus_element
 
 

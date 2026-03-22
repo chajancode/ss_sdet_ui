@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 
 
-from config.pages_urls import URL_MAIN_PAGE
+from config.params import URL_MAIN_PAGE
 from locators.lifetime_membership_page_locators import (
                             LifetimeMembershipPageLocators
 )
