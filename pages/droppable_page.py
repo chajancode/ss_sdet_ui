@@ -2,7 +2,7 @@ import allure
 from selenium.webdriver.common.action_chains import ActionChains
 
 
-from config.params import URL_DROPPABLE
+from config.pages_urls import URL_DROPPABLE
 from pages.base_page import BasePage
 from locators.droppable_page_locators import DroppablePageLocators
 
@@ -35,15 +35,14 @@ class DroppablePage(BasePage):
         self.driver.get(URL_DROPPABLE)
 
     @allure.step('Переключиться на iframe')
-    def switch_to_frame(self):
+    def switch_to_droppable_frame(self):
         """
         Переключает контекст на iframe, содержащий элементы для drag and drop.
 
         Returns:
             None
         """
-        frame = self.find_element(DroppablePageLocators.FRAME_DROPPABLE)
-        self.driver.switch_to.frame(frame)
+        self.switch_to_frame(DroppablePageLocators.FRAME_DROPPABLE)
 
     @allure.step('Перетащить элемент в принимающий')
     def drag_and_drop_element(self):

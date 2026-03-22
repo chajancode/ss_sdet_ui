@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from config.drivers import BROWSERS, DriverFactory
 from pages.droppable_page import DroppablePage
+from pages.frames_and_windows_page import FramesAndWindowsPage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from pages.sqlex_page import SqlexPage
@@ -77,6 +78,12 @@ def opened_sqlex_page(driver: WebDriver) -> SqlexPage:
 @pytest.fixture()
 def opened_droppable_page(driver: WebDriver) -> DroppablePage:
     page = DroppablePage(driver)
+    return page
+
+
+@pytest.fixture()
+def opened_windows_page(driver: WebDriver) -> FramesAndWindowsPage:
+    page = FramesAndWindowsPage(driver)
     return page
 
 

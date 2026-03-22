@@ -24,6 +24,6 @@ class TestDroppablePage:
     def test_drag_and_drop(
                 self, opened_droppable_page: DroppablePage, msg: str, driver
             ):
-        opened_droppable_page.switch_to_frame()
+        opened_droppable_page.switch_to_droppable_frame()
         opened_droppable_page.drag_and_drop_element()
         opened_droppable_page.check_text(expected_text=msg)

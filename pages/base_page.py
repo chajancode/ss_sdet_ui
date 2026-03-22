@@ -174,3 +174,16 @@ class BasePage(ABC):
                 )
         except (TimeoutException, WebDriverException):
             return None
+
+    @allure.step('Переключить контекст на iframe.')
+    def switch_to_frame(self, locator: tuple[By, str]):
+        """
+        Переключает контекст на iframe.
+
+        Args:
+            locator (tuple[By, str]): Локатор iframe.
+        Returns:
+            None
+        """
+        frame = self.find_element(locator)
+        self.driver.switch_to.frame(frame)
