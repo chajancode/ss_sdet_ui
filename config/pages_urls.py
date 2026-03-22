@@ -9,3 +9,7 @@ URL_FRAMES_AND_WINDOWS = URL_MAIN_PAGE + \
 URL_NEW_BROWSER_TAB = URL_MAIN_PAGE + \
                     'way2auto_jquery/frames-windows/defult1.html#'
 URL_ALERT = URL_MAIN_PAGE + '/way2auto_jquery/alert.php#load_box'
+URL_BASIC_AUTH = (
+                    'https://www.httpwatch.com/httpgallery/'
+                    'authentication/#showExample10'
+)

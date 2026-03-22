@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from config.drivers import BROWSERS, DriverFactory
 from pages.alert_page import AlertPage
+from pages.basic_auth_page import BasicAuthPage
 from pages.droppable_page import DroppablePage
 from pages.frames_and_windows_page import FramesAndWindowsPage
 from pages.login_page import LoginPage
@@ -91,6 +92,12 @@ def opened_windows_page(driver: WebDriver) -> FramesAndWindowsPage:
 @pytest.fixture()
 def opened_alert_page(driver: WebDriver) -> AlertPage:
     page = AlertPage(driver)
+    return page
+
+
+@pytest.fixture()
+def opened_auth_page(driver: WebDriver) -> BasicAuthPage:
+    page = BasicAuthPage(driver)
     return page
 
 
