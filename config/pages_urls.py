@@ -8,3 +8,4 @@ URL_FRAMES_AND_WINDOWS = URL_MAIN_PAGE + \
                     'way2auto_jquery/frames-and-windows.php#load_box'
 URL_NEW_BROWSER_TAB = URL_MAIN_PAGE + \
                     'way2auto_jquery/frames-windows/defult1.html#'
+URL_ALERT = URL_MAIN_PAGE + '/way2auto_jquery/alert.php#load_box'
