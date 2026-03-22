@@ -4,6 +4,7 @@ import allure
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from config.drivers import BROWSERS, DriverFactory
+from pages.droppable_page import DroppablePage
 from pages.login_page import LoginPage
 from pages.main_page import MainPage
 from pages.sqlex_page import SqlexPage
@@ -70,6 +71,12 @@ def opened_login_page(driver: WebDriver) -> LoginPage:
 @pytest.fixture()
 def opened_sqlex_page(driver: WebDriver) -> SqlexPage:
     page = SqlexPage(driver)
+    return page
+
+
+@pytest.fixture()
+def opened_droppable_page(driver: WebDriver) -> DroppablePage:
+    page = DroppablePage(driver)
     return page
 
 

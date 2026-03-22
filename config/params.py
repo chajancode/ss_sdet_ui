@@ -18,3 +18,5 @@ URL_SQLEX_INDEX = URL_SQLEX_PAGE + 'index.php'
 FILE_SQLX_COOKIES = 'cookies_sqlex.json'
 
 URL_GRID = os.getenv('GRID_URL')
+
+URL_DROPPABLE = URL_MAIN_PAGE + 'way2auto_jquery/droppable.php#load_box'
