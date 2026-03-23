@@ -76,7 +76,7 @@ class BasicAuthPage(BasePage):
         Проверяет, что защищённое изображение успешно загрузилось после
         аутентификации.
 
-        Ожидает появления изображения на странице.
+        Ожидает появления изображения.
 
         Returns:
             None
@@ -85,7 +85,7 @@ class BasicAuthPage(BasePage):
             AssertionError: Если изображение не появилось.
         """
         image = self.check_if_element_visible(
-                BasicAuthPageLocators.DOWNLOADED_IMG
+                BasicAuthPageLocators.IMG_DOWNLOADED
             )
 
         assert image, 'Изображение не появилось.'

@@ -1,5 +1,3 @@
-from time import sleep
-
 import allure
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -42,7 +40,6 @@ class AlertPage(BasePage):
         self.click_element(
             AlertPageLocators.TAB_INPUT_ALERT
         )
-        sleep(3)
 
     @allure.step('Нажать кнопку внутри фрейма')
     def click_inner_button(self):

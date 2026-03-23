@@ -7,7 +7,7 @@ class BasicAuthPageLocators:
         By.XPATH,
         "//input[@value='Display Image']"
     )
-    DOWNLOADED_IMG = (
+    IMG_DOWNLOADED = (
         By.ID,
         'downloadImg'
     )
