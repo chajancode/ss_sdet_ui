@@ -6,7 +6,7 @@ pipeline {
     }
     
     environment {
-        PYTHON_VERSION = '3.10.19'
+        PYTHON_VERSION = '3.10'
         ALLURE_RESULTS = 'allure-results'
     }
     
