@@ -22,8 +22,8 @@ pipeline {
             steps {
                 echo 'Настройка Python'
                 sh '''
-                    python3 --version
-                    python3 -m venv venv
+                    python3.10 --version
+                    python3.10 -m venv venv
                     . venv/bin/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
