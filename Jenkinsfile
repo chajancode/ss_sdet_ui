@@ -57,15 +57,6 @@ pipeline {
                     results: [[path: "${ALLURE_RESULTS}"]]
                 ])
             }
-            post {
-                always {
-                    publishHTML([
-                        reportDir: 'allure-report',
-                        reportFiles: 'index.html',
-                        reportName: 'Allure Report'
-                    ])
-                }
-            }
         }
     }
         post {
