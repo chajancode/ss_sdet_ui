@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'BRANCH', defaultValue: 'alerts-tests', description: 'Ветка для сборки')
+        string(name: 'BRANCH', defaultValue: 'alerts-tests', description: 'Ветка для сборки'),
+        string(name: 'EMAILS', defaultValue: 'chajancode@gmail.com,mistika13921@gmail.com')
     }
     
     environment {
@@ -110,7 +111,7 @@ pipeline {
                             Неизвестно: ${env.TEST_UNKNOWN}\n
                         """
                 emailext(
-                    to: 'chajancode@gmail.com',
+                    to: params.EMAILS,
                     subject: subject,
                     body: body,
                     mimeType: 'text/html',
