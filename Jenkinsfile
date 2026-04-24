@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-                stage('Генерация Allure отчёта') {
+            stage('Генерация Allure отчёта') {
             steps {
                 echo 'Генерация Allure отчета'
                 allure([
@@ -58,8 +58,6 @@ pipeline {
                 ])
             }
         }
-    }
-
         stage('Статы тестов') {
             steps {
                 echo 'Добыча статов из allure-summary.json'
@@ -88,7 +86,7 @@ pipeline {
                 }
             }
         }
-
+    }
         post {
         always {
             echo 'Очистка временных файлов'
