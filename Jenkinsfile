@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-            stage('Генерация Allure отчёта') {
+        stage('Генерация Allure отчёта') {
             steps {
                 echo 'Генерация Allure отчета'
                 allure([
@@ -58,6 +58,7 @@ pipeline {
                 ])
             }
         }
+
         stage('Статы тестов') {
             steps {
                 echo 'Добыча статов из allure-summary.json'
@@ -82,15 +83,13 @@ pipeline {
                     Пропущено: ${env.TEST_SKIPPED}
                     Неизвестно: ${env.TEST_UNKNOWN}
                     """
-                    }
                 }
             }
         }
     }
-        post {
+
+    post {
         always {
-            echo 'Очистка временных файлов'
-            cleanWs()
             script {
                 def subject = "Результаты тестов${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def body = """
@@ -118,5 +117,8 @@ pipeline {
                     attachLog: false
                 )
             }
+            echo 'Очистка временных файлов'
+            cleanWs()
         }
+    }
 }
