@@ -63,7 +63,7 @@ pipeline {
             steps {
                 echo 'Добыча статов из allure-summary.json'
                 script {
-                    def summaryFile = 'allure-summary.json'
+                    def summaryFile = 'allure-report/widgets/summary.json'
                     def summaryJson = readJSON file: summaryFile
                     def statistic = summaryJson.get('statistic', [:])
                     
@@ -91,22 +91,23 @@ pipeline {
     post {
         always {
             script {
+                sh 'zip -r allure-results.zip allure-results'
                 def subject = "Результаты тестов${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def body = """
-                        Результаты прогона автотестов
-                        Джоба: ${env.JOB_NAME}
-                        Номер сборки: ${env.BUILD_NUMBER}
-                        Ветка: ${params.BRANCH}
-                        Запущено: ${env.BUILD_ID}
-
-                        Статистика тестов:
-
-                            Всего тестов: ${env.TEST_TOTAL}
-                            Пройдено: ${env.TEST_PASSED}
-                            Упало: ${env.TEST_FAILED}
-                            Сломанные: ${env.TEST_BROKEN}
-                            Пропущено: ${env.TEST_SKIPPED}
-                            Неизвестно: ${env.TEST_UNKNOWN}
+                        Результаты прогона автотестов \n
+                        Джоба: ${env.JOB_NAME} \n
+                        Номер сборки: ${env.BUILD_NUMBER}\n
+                        Ветка: ${params.BRANCH}\n
+                        Запущено: ${env.BUILD_ID}\n
+                        \n
+                        Статистика тестов:\n
+                        \n
+                            Всего тестов: ${env.TEST_TOTAL}\n
+                            Пройдено: ${env.TEST_PASSED}\n
+                            Упало: ${env.TEST_FAILED}\n
+                            Сломанные: ${env.TEST_BROKEN}\n
+                            Пропущено: ${env.TEST_SKIPPED}\n
+                            Неизвестно: ${env.TEST_UNKNOWN}\n
                         """
                 emailext(
                     to: 'chajancode@gmail.com',
