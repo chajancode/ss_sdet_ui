@@ -1,5 +1,9 @@
 pipeline {
     agent any
+
+    parameters {
+        string(name: 'BRANCH', defaultValue: 'alerts-tests', description: 'Ветка для сборки')
+    }
     
     environment {
         PYTHON_VERSION = '3.10.19'
