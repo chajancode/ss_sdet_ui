@@ -59,16 +59,66 @@ pipeline {
             }
         }
     }
+
+        stage('Статы тестов') {
+            steps {
+                echo 'Добыча статов из allure-summary.json'
+                script {
+                    def summaryFile = 'allure-summary.json'
+                    def summaryJson = readJSON file: summaryFile
+                    def statistic = summaryJson.get('statistic', [:])
+                    
+                    env.TEST_TOTAL = statistic.get('total', 0).toString()
+                    env.TEST_PASSED = statistic.get('passed', 0).toString()
+                    env.TEST_FAILED = statistic.get('failed', 0).toString()
+                    env.TEST_BROKEN = statistic.get('broken', 0).toString()
+                    env.TEST_SKIPPED = statistic.get('skipped', 0).toString()
+                    env.TEST_UNKNOWN = statistic.get('unknown', 0).toString()
+
+                    echo """
+                    Результаты прогона тестов:
+                    Всего тестов: ${env.TEST_TOTAL}
+                    Пройдено: ${env.TEST_PASSED}
+                    Упало: ${env.TEST_FAILED}
+                    Сломанные: ${env.TEST_BROKEN}
+                    Пропущено: ${env.TEST_SKIPPED}
+                    Неизвестно: ${env.TEST_UNKNOWN}
+                    """
+                    }
+                }
+            }
+        }
+
         post {
         always {
             echo 'Очистка временных файлов'
             cleanWs()
+            script {
+                def subject = "Результаты тестов${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                def body = """
+                        Результаты прогона автотестов
+                        Джоба: ${env.JOB_NAME}
+                        Номер сборки: ${env.BUILD_NUMBER}
+                        Ветка: ${params.BRANCH}
+                        Запущено: ${env.BUILD_ID}
+
+                        Статистика тестов:
+
+                            Всего тестов: ${env.TEST_TOTAL}
+                            Пройдено: ${env.TEST_PASSED}
+                            Упало: ${env.TEST_FAILED}
+                            Сломанные: ${env.TEST_BROKEN}
+                            Пропущено: ${env.TEST_SKIPPED}
+                            Неизвестно: ${env.TEST_UNKNOWN}
+                        """
+                emailext(
+                    to: 'chajancode@gmail.com',
+                    subject: subject,
+                    body: body,
+                    mimeType: 'text/html',
+                    attachmentsPattern: 'allure-results.zip',
+                    attachLog: false
+                )
+            }
         }
-        success {
-            echo 'Tесты успешно пройдены'
-        }
-        failure {
-            echo 'Некоторые тесты упали'
-        }
-    }
 }
