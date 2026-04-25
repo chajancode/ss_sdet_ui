@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     triggers {
-        cron('12 12 * * *')
+        cron('25 12 * * *')
         echo 'Запуск по триггеру'
     }
 
