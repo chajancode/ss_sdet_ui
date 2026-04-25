@@ -4,14 +4,13 @@ services:
     container_name: sdet_ui
     depends_on:
       - selenoid
-      - selenoid_ui
     environment:
       - SELENOID_HOST=http://selenoid:4444
       - PYTHONBUFFERED=1
     volumes:
       - ./allure-results:/app/allure-results
       - ./allure-report:/app/allure-report
-    command: ["/bin/bash", "/app/bash_scripts/grid_test_run.sh"]
+    command: ["/bin/bash", "/app/bash_scripts/selenoid_run.sh"]
 
   selenoid:
     container_name: selenoid

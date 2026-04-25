@@ -53,7 +53,7 @@ class DriverFactory:
 
         if grid_mode:
             driver = webdriver.Remote(
-                command_executor=URL_GRID,
+                command_executor='http://selenoid:4444/wd/hub',
                 options=options
             )
         else:

@@ -13,6 +13,7 @@ pipeline {
     environment {
         PYTHON_VERSION = '3.10'
         ALLURE_RESULTS = 'allure-results'
+        ALLURE_REPORT = 'allure-report'
     }
     
     stages {
@@ -23,26 +24,16 @@ pipeline {
             }
         }
         
-        stage('Setup Python') {
+        stage('Запуск тестов в докере') {
             steps {
-                echo 'Настройка Python'
-                sh '''
-                    python3.10 --version
-                    python3.10 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                '''
-            }
-        }
-        
-        stage('Запуск тестов с Allure') {
-            steps {
-                echo 'Запуск автотестов с генерацией Allure results'
-                sh '''
-                    . venv/bin/activate
-                    bash_scripts/grid_run_tests.sh
-                '''
+                echo 'запуск селеноид и тестов через докер компоуз'
+                sh """
+                    docker-compose down || true
+                    docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                    TEST_EXIT_CODE=$?
+                    docker-compose down
+                    exit $TEST_EXIT_CODE
+                """
             }
             post {
                 always {

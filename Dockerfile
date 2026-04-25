@@ -11,4 +11,4 @@ COPY . .
 
 RUN chmod +x /app/bash_scripts/grid_run_tests.sh
 
-CMD ["/bin/bash", "/app/bash_scripts/grid_run_tests.sh"]
+CMD ["/bin/bash", "/app/bash_scripts/selenoid_run.sh"]
