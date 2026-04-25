@@ -2,12 +2,13 @@ pipeline {
     agent any
 
     triggers {
-        cron('52 11 * * *')
+        cron('12 12 * * *')
+        echo 'Запуск по триггеру'
     }
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'alerts-tests', description: 'Ветка для сборки')
-        string(name: 'EMAILS', defaultValue: 'chajancode@gmail.com,mistika13921@gmail.com')
+        string(name: 'EMAILS', defaultValue: 'chajancode@gmail.com')
     }
     
     environment {
@@ -97,13 +98,13 @@ pipeline {
         always {
             script {
                 sh 'zip -r allure-results.zip allure-results'
-                def subject = "Результаты тестов${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                def subject = "Результаты тестов ${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def body = """
                         Результаты прогона автотестов \n
                         Джоба: ${env.JOB_NAME} \n
                         Номер сборки: ${env.BUILD_NUMBER}\n
                         Ветка: ${params.BRANCH}\n
-                        Запущено: ${env.BUILD_ID}\n
+                        ID сборки: ${env.BUILD_ID}\n
                         \n
                         Статистика тестов:\n
                         \n
