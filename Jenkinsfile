@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    triggers {
+        cron('52 11 * * *')
+    }
+
     parameters {
         string(name: 'BRANCH', defaultValue: 'alerts-tests', description: 'Ветка для сборки')
         string(name: 'EMAILS', defaultValue: 'chajancode@gmail.com,mistika13921@gmail.com')
