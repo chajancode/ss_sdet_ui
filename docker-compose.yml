@@ -1,0 +1,24 @@
+services:
+  tests:
+    build: .
+    container_name: sdet_ui
+    depends_on:
+      - selenoid
+      - selenoid_ui
+    environment:
+      - SELENOID_HOST=http://selenoid:4444
+      - PYTHONBUFFERED=1
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-report:/app/allure-report
+    command: ["/bin/bash", "/app/bash_scripts/grid_test_run.sh"]
+
+  selenoid:
+    container_name: selenoid
+    image: aerokube/selenoid:latest-release
+    ports:
+      - "4444:4444"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./selenoid/config:/etc/selenoid
+    command: ["-conf", "/etc/selenoid/browsers.json"]
