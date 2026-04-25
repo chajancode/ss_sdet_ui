@@ -3,7 +3,6 @@ pipeline {
 
     triggers {
         cron('40 12 * * *')
-        echo 'Запуск по триггеру'
     }
 
     parameters {
