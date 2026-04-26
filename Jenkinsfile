@@ -14,6 +14,7 @@ pipeline {
         PYTHON_VERSION = '3.10'
         ALLURE_RESULTS = 'allure-results'
         ALLURE_REPORT = 'allure-report'
+        COMPOSE_PROJECT_NAME = 'ss_sdet_ui'
     }
     
     stages {
@@ -37,7 +38,8 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true
+                    sh 'docker-compose run --rm tests cp -r /app/allure-results ./ || true'
+                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
                 }
             }
         }
