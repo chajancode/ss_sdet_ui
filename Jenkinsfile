@@ -31,7 +31,7 @@ pipeline {
                 sh """
                     docker-compose down || true
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
-                    TEST_EXIT_CODE=$?
+                    TEST_EXIT_CODE=\$?
                     docker-compose down
                     exit $TEST_EXIT_CODE
                 """
