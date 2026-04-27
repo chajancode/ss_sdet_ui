@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo 'запуск селеноид и тестов через докер компоуз'
                 sh """
-                    export PROJECT_DIR=${env.PROJECT_DIR}
+                    echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
                     docker-compose down || true
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
                     TEST_EXIT_CODE=\$?
