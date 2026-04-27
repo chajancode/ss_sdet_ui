@@ -10,7 +10,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: [
         "-conf", "/etc/selenoid/config/browsers.json",
-        "-timeout", "60s"
+        "-timeout", "60s",
+        "-args", "--networks=ss_sdet_ui_default"
     ]
 
   tests:
