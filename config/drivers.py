@@ -4,7 +4,7 @@ from selenium.webdriver import Chrome, Firefox, Edge
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium import webdriver
 
-from config.params import URL_GRID
+# from config.params import URL_GRID
 from config.browser_options import (
     get_chrome_options,
     get_edge_options,
@@ -53,7 +53,7 @@ class DriverFactory:
 
         if grid_mode:
             driver = webdriver.Remote(
-                command_executor='http://localhost:4444/wd/hub',
+                command_executor='http://selenoid:4444/wd/hub',
                 options=options
             )
         else:
