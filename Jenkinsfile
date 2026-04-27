@@ -32,6 +32,7 @@ pipeline {
                 }
                 echo 'запуск селеноид и тестов через докер компоуз'
                 sh """
+                    cd ${WORKSPACE}
                     docker-compose down || true
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
                     TEST_EXIT_CODE=\$?
