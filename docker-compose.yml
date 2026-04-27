@@ -3,6 +3,9 @@ services:
     build:
       context: ./selenoid
       dockerfile: Dockerfile.selenoid
+
+    environment:
+    - DOCKER_API_VERSION=1.52
     ports:
       - "4444:4444"
     volumes:
