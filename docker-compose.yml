@@ -11,17 +11,24 @@ services:
     command: [
         "-conf", "/etc/selenoid/config/browsers.json",
         "-timeout", "60s",
-        "-args", "--networks=ss_sdet_ui_default"
+        "-args", "--network", "ss_sdet_ui_default"
     ]
+    networks:
+      - default
 
   tests:
     build: .
     depends_on:
       - selenoid
     environment:
-      - SELENOID_HOST=http://selenoid:4444
-      - SELENOID_URL=http://selenoid:4444
+      - SELENOID_HOST=http://selenoid:4444/wd/hub
+      - SELENOID_URL=http://selenoid:4444/wd/hub
       - PYTHONUNBUFFERED=1
     volumes:
       - ./allure-results:/app/allure-results
     command: ["/bin/bash", "/app/bash_scripts/selenoid_run.sh"]
+
+networks:
+  default:
+    name: ss_sdet_ui_default
+    driver: bridge
