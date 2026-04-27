@@ -15,6 +15,7 @@ pipeline {
         ALLURE_RESULTS = 'allure-results'
         ALLURE_REPORT = 'allure-report'
         COMPOSE_PROJECT_NAME = 'ss_sdet_ui'
+        PROJECT_DIR = "${WORKSPACE}"
     }
     
     stages {
@@ -32,7 +33,6 @@ pipeline {
                 }
                 echo 'запуск селеноид и тестов через докер компоуз'
                 sh """
-                    cd ${WORKSPACE}
                     docker-compose down || true
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
                     TEST_EXIT_CODE=\$?
