@@ -15,7 +15,7 @@ services:
       - selenoid
     environment:
       - SELENOID_HOST=http://selenoid:4444
-      - SELENOID_URL: http://selenoid:4444
+      - SELENOID_URL=http://selenoid:4444
       - PYTHONUNBUFFERED=1
     volumes:
       - ./allure-results:/app/allure-results
