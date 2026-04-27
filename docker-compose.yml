@@ -5,7 +5,7 @@ services:
       - "4444:4444"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./selenoid/config:/etc/selenoid/config
+      - ${PROJECT_DIR}/selenoid/config:/etc/selenoid/config
     command: ["-conf", "/etc/selenoid/config/browsers.json"]
 
   tests:
