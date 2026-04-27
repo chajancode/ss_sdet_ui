@@ -28,12 +28,9 @@ pipeline {
         
         stage('Запуск тестов в докере') {
             steps {
-                script {
-                    env.PROJECT_DIR = env.WORKSPACE
-                }
                 echo 'запуск селеноид и тестов через докер компоуз'
                 sh """
-                    export PROJECT_DIR
+                    export PROJECT_DIR=${env.PROJECT_DIR}
                     docker-compose down || true
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
                     TEST_EXIT_CODE=\$?
