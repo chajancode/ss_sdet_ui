@@ -5,7 +5,9 @@
       "126.0": {
         "image": "selenoid/chrome:126.0",
         "port": "4444",
-        "path": "/"
+        "path": "/",
+        "start": "xvfb-run --server-args='-screen 0 1920x1080x24' /usr/bin/google-chrome --disable-gpu --no-sandbox",
+        "env": []
       }
     }
   }

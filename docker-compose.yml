@@ -8,7 +8,12 @@ services:
       - "4444:4444"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: ["-conf", "/etc/selenoid/config/browsers.json"]
+    command: [
+        "-conf", "/etc/selenoid/config/browsers.json",
+        "-log-level", "debug",
+        "-timeout", "60s",
+        "-host", "http://selenoid:4444"
+    ]
 
   tests:
     build: .
