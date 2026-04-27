@@ -1,25 +1,22 @@
 services:
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    container_name: selenoid
+    ports:
+      - "4444:4444"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./selenoid:/etc/selenoid
+    command: ["-conf", "/etc/selenoid/browsers.json"]
+
   tests:
     build: .
     container_name: sdet_ui
-    network_mode: host
     depends_on:
       - selenoid
     environment:
-      - SELENOID_HOST=http://localhost:4444
-      - PYTHONBUFFERED=1
+      - SELENOID_HOST=http://selenoid:4444
+      - PYTHONUNBUFFERED=1
     volumes:
       - ./allure-results:/app/allure-results
-      - ./allure-report:/app/allure-report
     command: ["/bin/bash", "/app/bash_scripts/selenoid_run.sh"]
-
-  selenoid:
-    container_name: selenoid
-    image: aerokube/selenoid:latest-release
-    network_mode: host
-    environment:
-      - DOCKER_API_VERSION=1.44
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /var/jenkins_home/workspace/ss_sdet_ci_vps/selenoid/config:/etc/selenoid
-    command: ["-conf", "/etc/selenoid/browsers.json"]
