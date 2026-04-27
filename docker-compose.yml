@@ -10,7 +10,6 @@ services:
 
   tests:
     build: .
-    container_name: sdet_ui
     depends_on:
       - selenoid
     environment:
