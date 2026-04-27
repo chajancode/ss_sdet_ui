@@ -11,7 +11,7 @@ services:
     command: [
         "-conf", "/etc/selenoid/config/browsers.json",
         "-timeout", "60s",
-        "-args", "--network", "ss_sdet_ui_default"
+        "-container-network", "ss_sdet_ui_default"
     ]
     networks:
       - default
@@ -32,3 +32,4 @@ networks:
   default:
     name: ss_sdet_ui_default
     driver: bridge
+    attachable: true
