@@ -25,7 +25,24 @@ pipeline {
                 echo 'Код загружен из GitHub'
             }
         }
-        
+        stage('Диагностика Selenoid') {
+            steps {
+            sh """
+            echo "=== Проверка на хосте ==="
+            echo "Рабочая директория: ${WORKSPACE}"
+            ls -la ${WORKSPACE}/selenoid/config/ || echo "❌ Директория config не найдена"
+            
+            echo "Содержимое config:"
+            ls -la ${WORKSPACE}/selenoid/config/ -R || echo "❌ Нет файлов"
+            
+            echo "=== Проверка маунта в Docker ==="
+            docker-compose config | grep -A 5 "selenoid:" || echo "❌ Не удалось проверить конфиг"
+            
+            echo "=== Временный контейнер для проверки ==="
+            docker run --rm -v ${WORKSPACE}/selenoid/config:/test-data alpine ls -la /test-data/
+        """
+    }
+}
         stage('Запуск тестов в докере') {
             steps {
                 echo 'запуск селеноид и тестов через докер компоуз'
