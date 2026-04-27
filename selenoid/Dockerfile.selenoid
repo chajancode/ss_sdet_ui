@@ -3,3 +3,5 @@ FROM aerokube/selenoid:1.11.3
 RUN mkdir -p /etc/selenoid/config
 
 COPY config/browsers.json /etc/selenoid/config/browsers.json
+
+ENV DOCKER_API_VERSION=1.44
