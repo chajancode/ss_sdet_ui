@@ -5,7 +5,7 @@ services:
       - "4444:4444"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./:/etc/selenoid/config/
+      - /var/jenkins_home/workspace/ci_sdet_vps/selenoid:/etc/selenoid/config/
     command: ["-conf", "/etc/selenoid/config/browsers.json"]
 
   tests:
