@@ -27,6 +27,9 @@ pipeline {
         
         stage('Запуск тестов в докере') {
             steps {
+                script {
+                    env.PROJECT_DIR = env.WORKSPACE
+                }
                 echo 'запуск селеноид и тестов через докер компоуз'
                 sh """
                     docker-compose down || true
