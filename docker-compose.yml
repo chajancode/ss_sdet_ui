@@ -25,7 +25,7 @@ services:
       - SELENOID_URL=http://selenoid:4444/wd/hub
       - PYTHONUNBUFFERED=1
     volumes:
-      - ${HOST_WORKSPACE}/allure-results:/app/allure-results
+      - ./allure-results:/app/allure-results
     command: ["/bin/bash", "/app/bash_scripts/selenoid_run.sh"]
 
 networks:
