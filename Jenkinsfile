@@ -25,49 +25,49 @@ pipeline {
                 echo 'Код загружен из GitHub'
             }
         }
+        
         stage('Диагностика Selenoid') {
             steps {
-            sh """
-            echo "=== Проверка на хосте ==="
-            echo "Рабочая директория: ${WORKSPACE}"
-            ls -la ${WORKSPACE}/selenoid/config/ || echo "❌ Директория config не найдена"
-            
-            echo "Содержимое config:"
-            ls -la ${WORKSPACE}/selenoid/config/ -R || echo "❌ Нет файлов"
-            
-            echo "=== Проверка маунта в Docker ==="
-            docker-compose config | grep -A 5 "selenoid:" || echo "❌ Не удалось проверить конфиг"
-            
-            echo "=== Временный контейнер для проверки ==="
-            docker run --rm -v ${WORKSPACE}/selenoid/config:/test-data alpine ls -la /test-data/
-        """
-    }
-}
+                sh """
+                    echo "=== Проверка на хосте ==="
+                    echo "Рабочая директория: ${WORKSPACE}"
+                    ls -la ${WORKSPACE}/selenoid/config/ || echo "❌ Директория config не найдена"
+                    
+                    echo "Содержимое config:"
+                    ls -la ${WORKSPACE}/selenoid/config/ -R || echo "❌ Нет файлов"
+                    
+                    echo "=== Проверка маунта в Docker ==="
+                    docker-compose config | grep -A 5 "selenoid:" || echo "❌ Не удалось проверить конфиг"
+                    
+                    echo "=== Временный контейнер для проверки ==="
+                    docker run --rm -v ${WORKSPACE}/selenoid/config:/test-data alpine ls -la /test-data/
+                """
+            }
+        }
+        
         stage('Запуск тестов в докере') {
             steps {
-                    sh """
-                        echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
-                        docker-compose down || true
-                        docker-compose up --build --abort-on-container-exit --exit-code-from tests
-                        TEST_EXIT_CODE=\$?
-                        
-                        # Диагностика - ищем результаты
-                        echo "=== Поиск allure-results в контейнере ==="
-                        docker-compose run --rm tests find /app -name "*.json" -type f 2>/dev/null | head -20
-                        
-                        echo "=== Поиск везде ==="
-                        docker-compose run --rm tests find / -path "/proc" -prune -o -name "allure-results" -type d 2>/dev/null
-                        
-                        echo "=== Проверка смонтированной папки ==="
-                        ls -la ./allure-results/ || echo "Папка пуста или не существует"
-                        
-                        exit \$TEST_EXIT_CODE
-                    """
-                }
+                sh """
+                    echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
+                    docker-compose down || true
+                    docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                    TEST_EXIT_CODE=\$?
+                    
+                    # Диагностика - ищем результаты
+                    echo "=== Поиск allure-results в контейнере ==="
+                    docker-compose run --rm tests find /app -name "*.json" -type f 2>/dev/null | head -20
+                    
+                    echo "=== Поиск везде ==="
+                    docker-compose run --rm tests find / -path "/proc" -prune -o -name "allure-results" -type d 2>/dev/null
+                    
+                    echo "=== Проверка смонтированной папки ==="
+                    ls -la ./allure-results/ || echo "Папка пуста или не существует"
+                    
+                    exit \$TEST_EXIT_CODE
+                """
             }
             post {
                 always {
-                    // sh 'docker-compose run --rm tests cp -r ./allure-results ./ || true'
                     archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
                     sh 'docker-compose down || true'
                 }
@@ -119,7 +119,7 @@ pipeline {
     post {
         always {
             script {
-                sh 'zip -r allure-results.zip allure-results'
+                sh 'zip -r allure-results.zip allure-results || true'
                 def subject = "Результаты тестов ${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def body = """
                         Результаты прогона автотестов \n
@@ -150,4 +150,4 @@ pipeline {
             cleanWs()
         }
     }
-
+}
