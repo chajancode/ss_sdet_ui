@@ -28,22 +28,24 @@ pipeline {
         }
         stage('Запуск тестов в докере') {
             steps {
-                sh """
-                    echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
-                    docker-compose down || true
-                    echo "👀 завершил работу контейнеров"
-                    echo "🚀 Запуск тестов в докере"
-                    docker-compose up --build --abort-on-container-exit --exit-code-from tests
-                TEST_EXIT_CODE=\$?
-                echo \$TEST_EXIT_CODE > test_exit_code.txt
+                catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    sh """
+                        echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
+                        docker-compose down || true
+                        echo "👀 завершил работу контейнеров"
+                        echo "🚀 Запуск тестов в докере"
+                        docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                    TEST_EXIT_CODE=\$?
+                    echo \$TEST_EXIT_CODE > test_exit_code.txt
 
-                # Меняем владельца папки с результатами
-                sudo chown -R jenkins:jenkins allure-results || true
-                """
-                script {
-                    env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
+                    # Меняем владельца папки с результатами
+                    sudo chown -R jenkins:jenkins allure-results || true
+                    """
+                    script {
+                        env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
+                    }
+                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
                 }
-                archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
             }
             post {
                 always {
@@ -53,8 +55,6 @@ pipeline {
                             echo "👀 Содержимое текущей директории:"
                             ls -la
                         """
-
-                        // Проверка существования папки allure-results средствами Groovy
                         if (fileExists(ALLURE_RESULTS)) {
                             echo "✅ Папка ${ALLURE_RESULTS} существует"
                         } else {
@@ -64,7 +64,18 @@ pipeline {
                         echo "👀 завершение работы"
                         sh 'docker-compose down || true'
                     }
-                }
+                    script {
+            // Генерируем отчёт даже при ошибке
+                        if (fileExists(ALLURE_RESULTS)) {
+                            allure([
+                                includeProperties: false,
+                                jdk: '',
+                                properties: [],
+                                reportBuildPolicy: 'ALWAYS',
+                                results: [[path: "${ALLURE_RESULTS}"]]
+                            ])
+                        }
+                    }
                 failure {
                     sh 'docker-compose logs tests || true'
                 }
@@ -143,8 +154,6 @@ pipeline {
             attachLog: false
                 )
             }
-            echo 'Очистка временных файлов'
-            cleanWs()
         }
     }
 }
