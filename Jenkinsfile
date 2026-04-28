@@ -34,13 +34,15 @@ pipeline {
                     echo "👀 завершил работу контейнеров"
                     echo "🚀 Запуск тестов в докере"
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
-            TEST_EXIT_CODE=\$?
-            echo \$TEST_EXIT_CODE > test_exit_code.txt
+                TEST_EXIT_CODE=\$?
+                echo \$TEST_EXIT_CODE > test_exit_code.txt
 
-            # Меняем владельца папки с результатами
-            sudo chown -R jenkins:jenkins allure-results || true
+                # Меняем владельца папки с результатами
+                sudo chown -R jenkins:jenkins allure-results || true
                 """
-                env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
+                script {
+                    env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
+                }
                 archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
             }
             post {
