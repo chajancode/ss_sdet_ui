@@ -48,14 +48,13 @@ pipeline {
                     ls -la ./allure-results/ || echo "Папка пуста или не существует"
                     docker-compose run --rm tests ls -la /app/allure-results/ | echo "❤️Папка внутри ${PWD}"
 
-                    
-                    exit \$TEST_EXIT_CODE
+
+                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
                 """
             }
             post {
                 always {
-                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
-                    sh 'docker-compose down || true'
+                    
                 }
             }
         }
