@@ -35,18 +35,16 @@ pipeline {
                     echo "👀 завершил работу контейнеров"
                     echo "🚀 Запуск тестов в докере"
                     docker-compose up --build --abort-on-container-exit --exit-code-from tests
-                    echo "👀 Завершение тестов, код выхода: \$?"
-                    # TEST_EXIT_CODE=\$?
+                    TEST_EXIT_CODE=\$?
+                    echo \$TEST_EXIT_CODE > test_exit_code.txt
+
+                    # Меняем владельца папки с результатами
+                    sudo chown -R jenkins:jenkins allure-results || true
+
+                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
+                """
+                env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
                     
-                    echo "👀=== Поиск allure-results в контейнере ==="
-                    docker-compose run --rm tests find /app -name "*.json" -type f 2>/dev/null | head -20
-                    
-                    echo "👀=== Поиск везде ==="
-                    docker-compose run --rm tests find / -path "/proc" -prune -o -name "allure-results" -type d 2>/dev/null
-                    
-                    echo "👀=== Проверка смонтированной папки ==="
-                    ls -la ./allure-results/ || echo "Папка пуста или не существует"
-                    docker-compose run --rm tests ls -la /app/allure-results/ | echo "❤️Папка внутри ${PWD}"
 
 
                     archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
@@ -67,9 +65,13 @@ pipeline {
                         else
                             echo "❌ Папка ${ALLURE_RESULTS} не найдена"
                         fi
+                        echo "👀 завершение работы"
+                        docker-compose down || true
                         """
                     }
                 }
+                failure {
+                    sh 'docker-compose logs tests || true'
             }
         }
 
