@@ -76,6 +76,7 @@ pipeline {
                             ])
                         }
                     }
+                }
                 failure {
                     sh 'docker-compose logs tests || true'
                 }
@@ -123,7 +124,6 @@ pipeline {
             }
         }
     }
-    }
     post {
         always {
             script {
@@ -154,6 +154,8 @@ pipeline {
             attachLog: false
                 )
             }
+            echo 'Очистка временных файлов'
+            cleanWs()
         }
     }
 }
