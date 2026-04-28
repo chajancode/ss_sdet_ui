@@ -132,20 +132,23 @@ pipeline {
                 sh 'zip -r allure-results.zip allure-results || true'
                 def subject = "Результаты тестов ${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def body = """
-                Результаты прогона автотестов \n
-                Джоба: ${env.JOB_NAME} \n
-                Номер сборки: ${env.BUILD_NUMBER}\n
-                Ветка: ${params.BRANCH}\n
-                ID сборки: ${env.BUILD_ID}\n
-                \n
-                Статистика тестов:\n
-                \n
-                    Всего тестов: ${env.TEST_TOTAL}\n
-                    Пройдено: ${env.TEST_PASSED}\n
-                    Упало: ${env.TEST_FAILED}\n
-                    Сломанные: ${env.TEST_BROKEN}\n
-                    Пропущено: ${env.TEST_SKIPPED}\n
-                    Неизвестно: ${env.TEST_UNKNOWN}\n
+                    <div><strong>Результаты прогона автотестов</strong></div>
+                    <ul>
+                    <li><span> Джоба: </span><span>${</span><span>env.JOB_NAME</span><span>}</span><span> </span></li>
+                    <li><span> Номер сборки: </span><span>${</span><span>env.BUILD_NUMBER</span><span>}</span></li>
+                    <li><span> Ветка: </span><span>${</span><span>params.BRANCH</span><span>}</span></li>
+                    <li><span> ID сборки: </span><span>${</span><span>env.BUILD_ID</span><span>}</span></li>
+                    </ul>
+                    <div><span> <strong>Статистика тестов:</strong></span></div>
+                    <ul>
+                    <li><span> Всего тестов: </span><span>${</span><span>env.TEST_TOTAL</span><span>}</span></li>
+                    <li><span> Пройдено: </span><span>${</span><span>env.TEST_PASSED</span><span>}</span></li>
+                    <li><span> Упало: </span><span>${</span><span>env.TEST_FAILED</span><span>}</span></li>
+                    <li><span> Сломанные: </span><span>${</span><span>env.TEST_BROKEN</span><span>}</span></li>
+                    <li><span> Пропущено: </span><span>${</span><span>env.TEST_SKIPPED</span><span>}</span></li>
+                    <li><span> Неизвестно: </span><span>${</span><span>env.TEST_UNKNOWN</span><span>}</span></li>
+                    </ul>
+                    <div><span>&nbsp;</span></div>
                 """
                 emailext(
                     to: params.EMAILS,
