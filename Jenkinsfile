@@ -59,7 +59,7 @@ pipeline {
                             ls -la
 
                             echo "👀 Проверка папки ${ALLURE_RESULTS}:"
-                            if [ -d "${ALLURE_RESULTS}" ]; then
+                            if ( -d "${ALLURE_RESULTS}" ); then
                                 echo "✅ Папка ${ALLURE_RESULTS} существует"
                         else
                             echo "❌ Папка ${ALLURE_RESULTS} не найдена"
