@@ -45,20 +45,31 @@ pipeline {
 }
         stage('Запуск тестов в докере') {
             steps {
-                echo 'запуск селеноид и тестов через докер компоуз'
-                sh """
-                    echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
-                    docker-compose down || true
-                    docker-compose up --build --abort-on-container-exit --exit-code-from tests
-                    TEST_EXIT_CODE=\$?
-                    docker-compose down
-                    exit \$TEST_EXIT_CODE
-                """
+                    sh """
+                        echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
+                        docker-compose down || true
+                        docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                        TEST_EXIT_CODE=\$?
+                        
+                        # Диагностика - ищем результаты
+                        echo "=== Поиск allure-results в контейнере ==="
+                        docker-compose run --rm tests find /app -name "*.json" -type f 2>/dev/null | head -20
+                        
+                        echo "=== Поиск везде ==="
+                        docker-compose run --rm tests find / -path "/proc" -prune -o -name "allure-results" -type d 2>/dev/null
+                        
+                        echo "=== Проверка смонтированной папки ==="
+                        ls -la ./allure-results/ || echo "Папка пуста или не существует"
+                        
+                        exit \$TEST_EXIT_CODE
+                    """
+                }
             }
             post {
                 always {
                     // sh 'docker-compose run --rm tests cp -r ./allure-results ./ || true'
                     archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
+                    docker-compose down || true
                 }
             }
         }

@@ -1,3 +1,3 @@
-#1/bin/bash
+#!/bin/bash
 
-pytest -n 1 --dist=loadscope --reruns 2 --alluredir=./allure-results --grid
+pytest -n 3 --dist=loadscope --reruns 2 --alluredir=./allure-results --grid
