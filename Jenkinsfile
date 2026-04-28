@@ -34,13 +34,13 @@ pipeline {
                         docker-compose down || true
                         echo "👀 завершил работу контейнеров"
                         echo "🚀 Запуск тестов в докере"
-                        docker-compose up --build --abort-on-container-exit --exit-code-from tests \
-                            2>&1 | tee pytest.log
+                        docker-compose up --build --abort-on-container-exit --exit-code-from tests
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
                         chmod -R 777 ${ALLURE_RESULTS}
 
                         TEST_EXIT_CODE=\$?
                         echo \$TEST_EXIT_CODE > test_exit_code.txt
+                        docker-compose logs tests --no-color > pytest.log
                     """
                     script {
                         env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
@@ -152,8 +152,8 @@ pipeline {
                     <li><span> Неизвестно: </span><span>${env.TEST_UNKNOWN}</span><span> </span></li>
                     </ul>
                     <div><span>&nbsp;</span></div>
+
                     <details>
-                    <summary>Лог тестов</summary>
                     <pre>
                     ${failedLog}
                     </pre>
