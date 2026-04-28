@@ -134,19 +134,19 @@ pipeline {
                 def body = """
                     <div><strong>Результаты прогона автотестов</strong></div>
                     <ul>
-                    <li><span> Джоба: </span><span>${</span><span>env.JOB_NAME</span><span>}</span><span> </span></li>
-                    <li><span> Номер сборки: </span><span>${</span><span>env.BUILD_NUMBER</span><span>}</span></li>
-                    <li><span> Ветка: </span><span>${</span><span>params.BRANCH</span><span>}</span></li>
-                    <li><span> ID сборки: </span><span>${</span><span>env.BUILD_ID</span><span>}</span></li>
+                    <li><span> Джоба: </span><span>${env.JOB_NAME}</span><span> </span></li>
+                    <li><span> Номер сборки: </span><span>${env.BUILD_NUMBER}</span><span> </span></li>
+                    <li><span> Ветка: </span><span>${params.BRANCH}</span><span> </span></li>
+                    <li><span> ID сборки: </span><span>${env.BUILD_ID}</span><span> </span></li>
                     </ul>
                     <div><span> <strong>Статистика тестов:</strong></span></div>
                     <ul>
-                    <li><span> Всего тестов: </span><span>${</span><span>env.TEST_TOTAL</span><span>}</span></li>
-                    <li><span> Пройдено: </span><span>${</span><span>env.TEST_PASSED</span><span>}</span></li>
-                    <li><span> Упало: </span><span>${</span><span>env.TEST_FAILED</span><span>}</span></li>
-                    <li><span> Сломанные: </span><span>${</span><span>env.TEST_BROKEN</span><span>}</span></li>
-                    <li><span> Пропущено: </span><span>${</span><span>env.TEST_SKIPPED</span><span>}</span></li>
-                    <li><span> Неизвестно: </span><span>${</span><span>env.TEST_UNKNOWN</span><span>}</span></li>
+                    <li><span> Всего тестов: </span><span>${env.TEST_TOTAL}</span><span> </span></li>
+                    <li><span> Пройдено: </span><span>${env.TEST_PASSED}</span><span> </span></li>
+                    <li><span> Упало: </span><span>${env.TEST_FAILED}</span><span> </span></li>
+                    <li><span> Сломанные: </span><span>${env.TEST_BROKEN}</span><span> </span></li>
+                    <li><span> Пропущено: </span><span>${env.TEST_SKIPPED}</span><span> </span></li>
+                    <li><span> Неизвестно: </span><span>${env.TEST_UNKNOWN}</span><span> </span></li>
                     </ul>
                     <div><span>&nbsp;</span></div>
                 """
