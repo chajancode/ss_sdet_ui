@@ -57,16 +57,17 @@ pipeline {
                             echo "👀 Текущая директория: \$(pwd)"
                             echo "👀 Содержимое текущей директории:"
                             ls -la
-
-                            echo "👀 Проверка папки ${ALLURE_RESULTS}:"
-                            if ( -d "${ALLURE_RESULTS}" ); then
-                                echo "✅ Папка ${ALLURE_RESULTS} существует"
-                        else
-                            echo "❌ Папка ${ALLURE_RESULTS} не найдена"
-                        fi
-                        echo "👀 завершение работы"
-                        docker-compose down || true
                         """
+
+                        // Проверка существования папки allure-results средствами Groovy
+                        if (fileExists(ALLURE_RESULTS)) {
+                            echo "✅ Папка ${ALLURE_RESULTS} существует"
+                        } else {
+                            echo "❌ Папка ${ALLURE_RESULTS} не найдена"
+                        }
+
+                        echo "👀 завершение работы"
+                        sh 'docker-compose down || true'
                     }
                 }
                 failure {
