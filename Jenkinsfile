@@ -26,24 +26,24 @@ pipeline {
             }
         }
         
-        stage('Диагностика Selenoid') {
-            steps {
-                sh """
-                    echo "=== Проверка на хосте ==="
-                    echo "Рабочая директория: ${WORKSPACE}"
-                    ls -la ${WORKSPACE}/selenoid/config/ || echo "❌ Директория config не найдена"
+        // // stage('Диагностика Selenoid') {
+        //     steps {
+        //         sh """
+        //             echo "=== Проверка на хосте ==="
+        //             echo "Рабочая директория: ${WORKSPACE}"
+        //             ls -la ${WORKSPACE}/selenoid/config/ || echo "❌ Директория config не найдена"
                     
-                    echo "Содержимое config:"
-                    ls -la ${WORKSPACE}/selenoid/config/ -R || echo "❌ Нет файлов"
+        //             echo "Содержимое config:"
+        //             ls -la ${WORKSPACE}/selenoid/config/ -R || echo "❌ Нет файлов"
                     
-                    echo "=== Проверка маунта в Docker ==="
-                    docker-compose config | grep -A 5 "selenoid:" || echo "❌ Не удалось проверить конфиг"
+        //             echo "=== Проверка маунта в Docker ==="
+        //             docker-compose config | grep -A 5 "selenoid:" || echo "❌ Не удалось проверить конфиг"
                     
-                    echo "=== Временный контейнер для проверки ==="
-                    docker run --rm -v ${WORKSPACE}/selenoid/config:/test-data alpine ls -la /test-data/
-                """
-            }
-        }
+        //             echo "=== Временный контейнер для проверки ==="
+        //             docker run --rm -v ${WORKSPACE}/selenoid/config:/test-data alpine ls -la /test-data/
+        //         """
+        //     }
+        // }
         
         stage('Запуск тестов в докере') {
             steps {
@@ -54,15 +54,15 @@ pipeline {
                     TEST_EXIT_CODE=\$?
                     
                     # Диагностика - ищем результаты
-                    echo "=== Поиск allure-results в контейнере ==="
+                    echo "👀=== Поиск allure-results в контейнере ==="
                     docker-compose run --rm tests find /app -name "*.json" -type f 2>/dev/null | head -20
                     
-                    echo "=== Поиск везде ==="
+                    echo "👀=== Поиск везде ==="
                     docker-compose run --rm tests find / -path "/proc" -prune -o -name "allure-results" -type d 2>/dev/null
                     
-                    echo "=== Проверка смонтированной папки ==="
+                    echo "👀=== Проверка смонтированной папки ==="
                     ls -la ./allure-results/ || echo "Папка пуста или не существует"
-                    sudo find / -name "allure-results" -type d 2>/dev/null || echo "❌ Не найдено ни одной папки allure-results"
+                    docker-compose run --rm tests ls -la /app/allure-results/ | echo "❤️Папка внутри ${PWD}"
 
                     
                     exit \$TEST_EXIT_CODE
