@@ -35,11 +35,11 @@ pipeline {
                         echo "👀 завершил работу контейнеров"
                         echo "🚀 Запуск тестов в докере"
                         docker-compose up --build --abort-on-container-exit --exit-code-from tests
-                    TEST_EXIT_CODE=\$?
-                    echo \$TEST_EXIT_CODE > test_exit_code.txt
+                        docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
+                        chmod -R 777 ${ALLURE_RESULTS}
 
-                    # Меняем владельца папки с результатами
-                    chmod -R 777 allure-results || true
+                        TEST_EXIT_CODE=\$?
+                        echo \$TEST_EXIT_CODE > test_exit_code.txt
                     """
                     script {
                         env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
@@ -67,6 +67,8 @@ pipeline {
                     script {
                         echo "👀 Проверка наличия результатов тестов для Allure"
                         if (fileExists(ALLURE_RESULTS)) {
+                            sh "sudo chown -R jenkins:jenkins ${ALLURE_RESULTS} || true"
+                            sh "chmod -R 755 ${ALLURE_RESULTS} || true"
                             allure([
                                 includeProperties: false,
                                 jdk: '',
