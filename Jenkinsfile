@@ -16,6 +16,8 @@ pipeline {
         ALLURE_REPORT = 'allure-report'
         COMPOSE_PROJECT_NAME = 'ss_sdet_ui'
         PROJECT_DIR = "${WORKSPACE}"
+        HOST_WORKSPACE = "/var/lib/docker/volumes/jenkins_home/_data/workspace/${JOB_NAME}"
+
     }
     
     stages {
