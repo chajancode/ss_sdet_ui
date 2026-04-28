@@ -69,7 +69,7 @@ pipeline {
                 always {
                     // sh 'docker-compose run --rm tests cp -r ./allure-results ./ || true'
                     archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
-                    docker-compose down || true
+                    sh 'docker-compose down || true'
                 }
             }
         }
