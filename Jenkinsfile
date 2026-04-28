@@ -34,7 +34,8 @@ pipeline {
                         docker-compose down || true
                         echo "👀 завершил работу контейнеров"
                         echo "🚀 Запуск тестов в докере"
-                        docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                        docker-compose up --build --abort-on-container-exit --exit-code-from tests \
+                            2>&1 | tee pytest.log
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
                         chmod -R 777 ${ALLURE_RESULTS}
 
@@ -130,6 +131,8 @@ pipeline {
         always {
             script {
                 sh 'zip -r allure-results.zip allure-results || true'
+                def failedLog = readFile('pytest.log')
+                failedLog = failedLog.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
                 def subject = "Результаты тестов ${env.JOB_NAME} #${env.BUILD_NUMBER}"
                 def body = """
                     <div><strong>Результаты прогона автотестов</strong></div>
@@ -149,6 +152,12 @@ pipeline {
                     <li><span> Неизвестно: </span><span>${env.TEST_UNKNOWN}</span><span> </span></li>
                     </ul>
                     <div><span>&nbsp;</span></div>
+                    <details>
+                    <summary>Лог тестов</summary>
+                    <pre>
+                    ${failedLog}
+                    </pre>
+                    </details>
                 """
                 emailext(
                     to: params.EMAILS,
