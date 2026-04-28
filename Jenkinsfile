@@ -65,7 +65,7 @@ pipeline {
                         sh 'docker-compose down || true'
                     }
                     script {
-            // Генерируем отчёт даже при ошибке
+                        echo "👀 Проверка наличия результатов тестов для Allure"
                         if (fileExists(ALLURE_RESULTS)) {
                             allure([
                                 includeProperties: false,
@@ -82,18 +82,18 @@ pipeline {
             }
         }
 
-        stage('Генерация Allure отчёта') {
-            steps {
-                echo 'Генерация Allure отчета'
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    properties: [],
-                    reportBuildPolicy: 'ALWAYS',
-                    results: [[path: "${ALLURE_RESULTS}"]]
-                ])
-            }
-        }
+        // stage('Генерация Allure отчёта') {
+        //     steps {
+        //         echo 'Генерация Allure отчета'
+        //         allure([
+        //             includeProperties: false,
+        //             jdk: '',
+        //             properties: [],
+        //             reportBuildPolicy: 'ALWAYS',
+        //             results: [[path: "${ALLURE_RESULTS}"]]
+        //         ])
+        //     }
+        // }
 
         stage('Статы тестов') {
             steps {
@@ -123,7 +123,7 @@ pipeline {
             }
         }
     }
-
+    }
     post {
         always {
             script {
@@ -156,5 +156,4 @@ pipeline {
             }
         }
     }
-}
 }
