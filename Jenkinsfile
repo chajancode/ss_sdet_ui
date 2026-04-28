@@ -154,9 +154,8 @@ pipeline {
                     <div><span>&nbsp;</span></div>
 
                     <details>
-                    <pre>
-                    ${failedLog}
-                    </pre>
+                    <summary><strong>Лог тестов</strong></summary>
+                    <p>${failedLog}</p>
                     </details>
                 """
                 emailext(
