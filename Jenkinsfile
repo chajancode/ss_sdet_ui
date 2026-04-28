@@ -50,8 +50,8 @@ pipeline {
                 sh """
                     echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
                     docker-compose down || true
-                    docker-compose up --build  tests
-                    # TEST_EXIT_CODE=\$?
+                    docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                    TEST_EXIT_CODE=\$?
                     
                     # Диагностика - ищем результаты
                     echo "👀=== Поиск allure-results в контейнере ==="
@@ -65,7 +65,7 @@ pipeline {
                     docker-compose run --rm tests ls -la /app/allure-results/ | echo "❤️Папка внутри ${PWD}"
 
                     
-                    # exit \$TEST_EXIT_CODE
+                    exit \$TEST_EXIT_CODE
                 """
             }
             post {
