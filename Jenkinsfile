@@ -62,6 +62,8 @@ pipeline {
                     
                     echo "=== Проверка смонтированной папки ==="
                     ls -la ./allure-results/ || echo "Папка пуста или не существует"
+                    sudo find / -name "allure-results" -type d 2>/dev/null || echo "❌ Не найдено ни одной папки allure-results"
+
                     
                     exit \$TEST_EXIT_CODE
                 """
