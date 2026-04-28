@@ -39,7 +39,7 @@ pipeline {
                     echo \$TEST_EXIT_CODE > test_exit_code.txt
 
                     # Меняем владельца папки с результатами
-                    sudo chown -R jenkins:jenkins allure-results || true
+                    sudo chmod -R 777 allure-results || true
                     """
                     script {
                         env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
