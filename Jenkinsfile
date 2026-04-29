@@ -32,8 +32,6 @@ pipeline {
                     sh """
                         echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
                         docker-compose down || true
-                        echo "👀 завершил работу контейнеров"
-                        echo "🚀 Запуск тестов в докере"
                         docker-compose up --build --abort-on-container-exit --exit-code-from tests
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
                         chmod -R 777 ${ALLURE_RESULTS}
@@ -51,22 +49,10 @@ pipeline {
             post {
                 always {
                     script {
-                        sh """
-                            echo "👀 Текущая директория: \$(pwd)"
-                            echo "👀 Содержимое текущей директории:"
-                            ls -la
-                        """
-                        if (fileExists(ALLURE_RESULTS)) {
-                            echo "✅ Папка ${ALLURE_RESULTS} существует"
-                        } else {
-                            echo "❌ Папка ${ALLURE_RESULTS} не найдена"
-                        }
-
-                        echo "👀 завершение работы"
                         sh 'docker-compose down || true'
                     }
                     script {
-                        echo "👀 Проверка наличия результатов тестов для Allure"
+                        echo "формирование отчета Allure"
                         if (fileExists(ALLURE_RESULTS)) {
                             sh "sudo chown -R jenkins:jenkins ${ALLURE_RESULTS} || true"
                             sh "chmod -R 755 ${ALLURE_RESULTS} || true"
@@ -85,20 +71,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Генерация Allure отчёта') {
-        //     steps {
-        //         echo 'Генерация Allure отчета'
-        //         allure([
-        //             includeProperties: false,
-        //             jdk: '',
-        //             properties: [],
-        //             reportBuildPolicy: 'ALWAYS',
-        //             results: [[path: "${ALLURE_RESULTS}"]]
-        //         ])
-        //     }
-        // }
-
         stage('Статы тестов') {
             steps {
                 echo 'Добыча статов из allure-summary.json'
@@ -167,7 +139,6 @@ pipeline {
             attachLog: false
                 )
             }
-            echo 'Очистка временных файлов'
         }
     }
 }
