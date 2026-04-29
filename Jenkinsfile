@@ -35,6 +35,22 @@ pipeline {
                         docker-compose up --build -d
                         docker-compose run --rm tests
                         TEST_EXIT_CODE=\$?
+                        # Находим ID временного контейнера tests
+                            CONTAINER_ID=\$(docker ps -a -f name=tests-run -q | head -1)
+                            
+                            # Сохраняем логи ТОЛЬКО от tests контейнера
+                            if [ -n "\$CONTAINER_ID" ]; then
+                                docker logs \$CONTAINER_ID --no-color > pytest.log
+                                echo "Лог сохранен из контейнера: \$CONTAINER_ID"
+                            else
+                                echo "Контейнер tests не найден" > pytest.log
+                                echo "Лог не найден"
+                            fi
+                            
+                            # Копируем результаты
+                            if [ -n "\$CONTAINER_ID" ]; then
+                                docker cp \$CONTAINER_ID:/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ || true
+                            fi
 
                         docker-compose logs tests --no-color > pytest.log
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
