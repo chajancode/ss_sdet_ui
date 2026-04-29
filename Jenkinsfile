@@ -40,7 +40,6 @@ pipeline {
 
                         docker-compose up --build --abort-on-container-exit --exit-code-from tests 2>&1 | tee output.log
 
-                        grep '^tests-1\\\\s*|' output.log | sed 's/^tests-1\\\\s*|//' > pytest.log
 
 
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
