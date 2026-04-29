@@ -33,12 +33,12 @@ pipeline {
                         echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
                         docker-compose down || true
                         docker-compose up --build --abort-on-container-exit --exit-code-from tests
+                        docker-compose logs tests --no-color > pytest.log
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
                         chmod -R 777 ${ALLURE_RESULTS}
 
                         TEST_EXIT_CODE=\$?
                         echo \$TEST_EXIT_CODE > test_exit_code.txt
-                        docker-compose logs tests --no-color > pytest.log
                     """
                     script {
                         env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
