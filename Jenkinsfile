@@ -139,6 +139,7 @@ pipeline {
             attachLog: false
                 )
             }
+            cleanWs()
         }
     }
 }
