@@ -43,7 +43,7 @@ pipeline {
                     script {
                         env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
                     }
-                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
+                    archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*, pytest.log", fingerprint: true, allowEmptyArchive: true
                 }
             }
             post {
