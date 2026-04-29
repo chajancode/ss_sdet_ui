@@ -32,9 +32,7 @@ pipeline {
                     sh """
                         echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
                         docker-compose down || true
-                        docker-compose up --build --abort-on-container-exit --exit-code-from tests 2>&1 | \
-                        grep '^tests-1\s*|' | \
-                        sed 's/^tests-1\s*|//' > pytest.log
+                        docker-compose up --build --abort-on-container-exit --exit-code-from tests 2>&1 | grep '^tests-1\\s*|' | sed 's/^tests-1\\s*|//' > pytest.log
                         docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
                         chmod -R 777 ${ALLURE_RESULTS}
 
