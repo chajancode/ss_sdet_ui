@@ -23,7 +23,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
-                echo 'Код загружен из GitHub'
+                echo 'Код загружен из  GitHub'
             }
         }
         stage('Запуск тестов в докере') {
