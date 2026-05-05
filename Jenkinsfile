@@ -33,7 +33,7 @@ pipeline {
                         echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
                         docker-compose down || true
                         docker-compose up --build --abort-on-container-exit --exit-code-from tests 2>&1 | \\
-                        tee output.log | \
+                        tee output.log | tee /dev/tty | \
                         grep "^tests-1\\s*|" | \
                         sed "s/^tests-1\\s*|//" > pytest.log
 
