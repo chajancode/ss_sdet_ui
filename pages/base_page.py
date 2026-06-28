@@ -2,15 +2,14 @@ from typing import Tuple
 from abc import ABC, abstractmethod
 
 import allure
-from selenium.webdriver.chrome .webdriver import WebDriver
+from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 from selenium.common import (
     NoSuchElementException,
-    TimeoutException,
-    WebDriverException
+    TimeoutException
 )
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -52,113 +51,95 @@ class BasePage(ABC):
         """
 
     @allure.step('Найти элемент: {locator}.')
-    def find_element(self, locator: Tuple[By, str]) -> WebElement | None:
+    def find_element(self, locator: Tuple[By, str]) -> WebElement:
         """
         Находит первый элемент, соответствующий локатору, с ожиданием его
-        присутствия. Если элемент не найден в течение заданного таймаута,
-        возвращает `None`.
+        присутствия.
 
         Args:
             locator (Tuple[By, str]): Кортеж, определяющий поиск,
                и локатор элемента (например, `(By.ID, "my_id")`).
 
         Returns:
-            WebElement | None: Найденный элемент или `None`, если элемент
-                не найден.
-
-        Returns:
-            None
+            WebElement: Найденный элемент.
         """
-        try:
-            return self.wait.until(
-                EC.presence_of_element_located(locator)
-            )
-        except (TimeoutException, WebDriverException):
-            return None
+        return self.wait.until(
+            EC.presence_of_element_located(locator),
+            message=f'Элемент "{locator}" не найден'  # type: ignore
+        )
 
     @allure.step('Найти все элементы: {locator}.')
     def find_elements(
                 self, locator: Tuple[By, str]
-            ) -> list[WebElement] | None:
+            ) -> list[WebElement]:
         """
         Находит все элементы, соответствующие локатору, с ожиданием их
         присутствия.
 
-        Ожидает появления всех элементов на странице. Если элементы не найдены
-        в течение заданного таймаута, возвращает `None`.
+        Ожидает появления всех элементов на странице.
 
         Args:
             locator (Tuple[By, str]): Кортеж, определяющий поиск, и локатор
                     элементов (например, `(By.CLASS_NAME, "my_class")`).
 
         Returns:
-            list[WebElement] | None: Список найденных элементов или `None`,
-                если элементы не найдены.
+            list[WebElement]: Список найденных элементов.
         """
-        try:
-            return self.wait.until(
-                EC.presence_of_all_elements_located(locator)
-            )
-        except (TimeoutException, WebDriverException):
-            return None
+        return self.wait.until(
+            EC.presence_of_all_elements_located(locator),
+            message=f'Элементы "{locator}" не найдены'  # type: ignore
+        )
 
     @allure.step('Проверить кликабельность элемента: {locator}')
-    def is_clickable(self, locator: Tuple[By, str]) -> WebElement | None:
+    def is_clickable(self, locator: Tuple[By, str]) -> bool:
         """
         Проверяет, доступен ли элемент для клика, с ожиданием.
 
         Ожидает, пока элемент станет кликабельным (видимым и активным).
         Если элемент не становится кликабельным в течение заданного таймаута,
-        возвращает `None`.
+        возвращает False.
 
         Args:
             locator (Tuple[By, str]): Кортеж, определяющий поиск,
                 и локатор элемента.
 
         Returns:
-            WebElement | None: Кликабельный элемент или `None`, если
-                условие не выполнено.
+            bool
         """
         try:
-            return self.wait.until(
-                EC.element_to_be_clickable(
-                    locator
-                )
+            self.wait.until(
+                EC.element_to_be_clickable(locator)  # type: ignore
             )
-        except (TimeoutException, WebDriverException):
-            return None
+            return True
+        except TimeoutException:
+            return False
 
     @allure.step('Кликнуть по элементу: {locator}.')
-    def click_element(self, locator: Tuple[By, str]) -> WebElement | None:
+    def click_element(self, locator: Tuple[By, str]) -> WebElement:
         """
         Кликает по элементу, если он доступен для клика.
 
         Сначала проверяет, что элемент кликабелен. Если да, выполняет клик.
-        В случае ошибки при клике или если элемент не кликабелен,
-        возвращает None.
 
         Args:
             locator (Tuple[By, str]): Кортеж, определяющий поиск,
                     и локатор элемента.
 
         Returns:
-            WebElement | None: Элемент, по которому был выполнен клик, или
-             None в случае ошибки или недоступности элемента.
+            WebElement: Элемент, по которому был выполнен клик.
         """
-        element = self.is_clickable(locator)
-        if element is None:
-            return None
-        try:
-            element.click()
-            return element
-        except WebDriverException:
-            return None
+        element = self.wait.until(
+            EC.element_to_be_clickable(locator),  # type: ignore
+            message=f'Элемент не кликабелен: {locator}',
+        )
+        element.click()
+        return element
 
     @allure.step('Проверить видимость элемента: {locator}.')
     def check_if_element_visible(
             self,
             locator: Tuple[By, str]
-            ) -> WebElement | None:
+            ) -> bool:
         """
         Проверяет видимость элемента с ожиданием.
 
@@ -170,15 +151,15 @@ class BasePage(ABC):
                 и локатор элемента.
 
         Returns:
-            WebElement | None: Видимый элемент или `None`, если элемент не
-                виден или не найден.
+            WebElement: Видимый элемент.
         """
         try:
-            return self.wait.until(
-                EC.visibility_of_element_located(locator)
+            self.wait.until(
+                EC.visibility_of_element_located(locator)  # type: ignore
                 )
-        except (TimeoutException, WebDriverException):
-            return None
+            return True
+        except TimeoutException:
+            return False
 
     @allure.step('Переключить контекст на iframe.')
     def switch_to_frame(self, locator: tuple[By, str]):

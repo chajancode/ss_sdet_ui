@@ -369,7 +369,7 @@ class MainPage(BasePage):
         Returns:
             None
         """
-        navbar = self.check_if_element_visible(
+        navbar = self.find_element(
             MainPageLocators.NAVIGATION_BAR
         )
         init_location = navbar.location
@@ -377,7 +377,7 @@ class MainPage(BasePage):
         action = ActionChains(self.driver)
         action.scroll_by_amount(delta_x, delta_y).perform()
 
-        navbar_after = self.check_if_element_visible(
+        navbar_after = self.find_element(
             MainPageLocators.NAVIGATION_BAR
         )
         new_location = navbar_after.location
@@ -408,18 +408,11 @@ class MainPage(BasePage):
             None
         """
         self.close_popup()
-
-        all_courses = self.click_element(
+        self.click_element(
             MainPageLocators.NAVBAR_ALL_COURSES
         )
-        assert all_courses, 'Пункт меню "All courses" не доступен'
-
-        lifetime_membership = self.click_element(
+        self.click_element(
             MainPageLocators.NAVBAR_LIFETIME_MEMBERSHIP
-        )
-        assert lifetime_membership, (
-            'Пункт меню "All Courses > Lifetime Membership" '
-            'не доступен'
         )
 
         self.wait.until(EC.presence_of_all_elements_located(

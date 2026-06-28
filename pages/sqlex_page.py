@@ -87,7 +87,7 @@ class SqlexPage(BasePage):
             self.find_element(SqlexLocators.FLD_PASSWORD).send_keys(password)
             self.click_element(SqlexLocators.BTN_LOGIN)
 
-            is_logged_in = self.check_if_element_visible(
+            is_logged_in = self.find_element(
                 SqlexLocators.USERNAME
             )
             if is_logged_in.text == expected_nickname:
@@ -105,7 +105,7 @@ class SqlexPage(BasePage):
         """
         locator = SqlexLocators.FLD_LOGIN
 
-        if self.find_element(locator):
+        if self.check_if_element_visible(locator):
 
             result = unfocus_element(self.driver, locator)
 

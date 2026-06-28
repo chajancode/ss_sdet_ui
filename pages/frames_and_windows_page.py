@@ -47,8 +47,6 @@ class FramesAndWindowsPage(BasePage):
             locator (Tuple[By, str]): Локатор iframe.
         """
         frame = self.find_element(locator)
-        if frame is None:
-            raise AssertionError(f'Frame не найден по локатору: {locator}')
         self.driver.switch_to.frame(frame)
 
     @allure.step('Переключиться на iframe на странице с вкладками')
@@ -71,13 +69,9 @@ class FramesAndWindowsPage(BasePage):
         """
         self.switch_to_new_tab_frame()
 
-        element = self.click_element(
+        self.click_element(
             FramesAndWindowsPageLocators.NEW_BROWSER_TAB
         )
-        if element is None:
-            raise AssertionError(
-                'Не удалось кликнуть по кнопке открытия новой вкладки'
-            )
         new_tab_handle = self._switch_to_last_tab()
 
         return new_tab_handle
@@ -92,13 +86,9 @@ class FramesAndWindowsPage(BasePage):
             str: Хэндл новой вкладки
         """
 
-        element = self.click_element(
+        self.click_element(
             FramesAndWindowsPageLocators.NEW_BROWSER_TAB
         )
-        if element is None:
-            raise AssertionError(
-                'Не удалось кликнуть по ссылке для открытия новой вкладки'
-            )
 
         self.wait.until(EC.number_of_windows_to_be(3))
 

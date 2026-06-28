@@ -59,9 +59,9 @@ class AlertPage(BasePage):
         """
         self.switch_to_frame(AlertPageLocators.IFRAME)
 
-        assert self.click_element(
+        self.click_element(
             AlertPageLocators.BTN_INSIDE_INPUT_ALERT
-            ), 'Не удалось нажать на кнопку.'
+        )
 
     @allure.step('Ввести текст в появившийся алерт и подтвердить')
     def enter_text_and_apply(self, text: str = 'Selenium'):

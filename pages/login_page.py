@@ -61,7 +61,7 @@ class LoginPage(BasePage):
             username: str,
             password: str,
             msg_locator: Tuple[By, str],
-            ) -> WebElement | None:
+            ) -> WebElement:
         """
         Выполняет процесс авторизации с указанными данными.
 
@@ -72,11 +72,7 @@ class LoginPage(BasePage):
                 элемента с сообщением результата авторизации.
 
         Returns:
-            WebElement | None: Элемент с сообщением результата или `None`,
-                если элемент не найден.
-
-        Returns:
-            None
+            WebElement: Элемент с сообщением результата.
         """
         self.fill_text_form(
             LoginPageLocators.FLD_USERNAME, username
@@ -132,7 +128,7 @@ class LoginPage(BasePage):
         Returns:
             None
         """
-        assert not self.click_element(
+        assert not self.is_clickable(
                 LoginPageLocators.BTN_LOGIN
         ), 'Кнопка "Login" кликабельна'
 
@@ -152,12 +148,8 @@ class LoginPage(BasePage):
         Returns:
             None
         """
-        logout_btn = self.click_element(
+        self.click_element(
                 LoginPageLocators.BTN_LOGOUT
-            )
-        if not logout_btn:
-            raise AssertionError(
-                'Кнопка Logout не появилась или не кликабельна'
             )
         self.check_fields_visibility()
         self.check_login_button_is_not_clickable()
@@ -174,7 +166,7 @@ class LoginPage(BasePage):
             msg_expected: str,
             test_type: str,
             step_name: str # noqa
-            ) -> None:
+            ):
         """
         Проверяет вход в систему с различными наборами тестовых данных
         (валидными и невалидными)
@@ -197,16 +189,15 @@ class LoginPage(BasePage):
         match test_type:
             case 'success': msg_locator = LoginPageLocators.MSG_LOGGED_IN
             case 'fail': msg_locator = LoginPageLocators.MSG_AUTH_ERROR
+            case _: raise ValueError(f'Неизвестный test_type: {test_type}')
 
         msg = self.do_login(
             username=username,
             password=password,
             msg_locator=msg_locator
         )
-        if msg:
-            assert msg.text == msg_expected, (
-                f'Сообщение не появилось или не соответствует ожидаемому. '
-                f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
-            )
-        else:
-            raise AssertionError('Не соответствует ожидаемому результату.')
+
+        assert msg.text == msg_expected, (
+            f'Сообщение не появилось или не соответствует ожидаемому. '
+            f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
+        )
