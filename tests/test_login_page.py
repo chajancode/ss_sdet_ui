@@ -6,13 +6,6 @@ from test_data.login_test_data_model import LoginTestData
 from test_data.login_test_data_sets import collect_datasets
 
 
-@pytest.fixture(scope='function')
-def opened_login_page(request, opened_login_page: LoginPage):
-    opened_login_page.open()
-    request.cls.login_page = opened_login_page
-    yield opened_login_page
-
-
 @allure.epic('Тестирование UI')
 @allure.feature('Страница авторизации')
 @pytest.mark.ui
@@ -24,10 +17,11 @@ class TestLoginPage:
     )
     @allure.severity(allure.severity_level.CRITICAL)
     def test_authentication_fields(
-                self, opened_login_page: LoginPage, driver
+                self, open_page
             ) -> None:
-        opened_login_page.check_fields_visibility()
-        opened_login_page.check_login_button_is_not_clickable()
+        login_page: LoginPage = open_page(LoginPage)
+        login_page.check_fields_visibility()
+        login_page.check_login_button_is_not_clickable()
 
     @allure.title('Проверка авторизации')
     @allure.description('Проверка авторизации с различными наборами данных')
@@ -37,11 +31,11 @@ class TestLoginPage:
     )
     def test_login(
                 self,
-                opened_login_page: LoginPage,
+                open_page,
                 test_data: LoginTestData,
-                driver
             ) -> None:
-        opened_login_page.check_login(**test_data.to_dict())
+        login_page: LoginPage = open_page(LoginPage)
+        login_page.check_login(**test_data.to_dict())
 
         if test_data.test_type == 'success':
-            opened_login_page.check_logout()
+            login_page.check_logout()

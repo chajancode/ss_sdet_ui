@@ -1,6 +1,6 @@
-import os
 from dotenv import load_dotenv
 
+from config.settings import settings
 from test_data.login_test_data_model import LoginTestData, SqlexLoginData
 
 load_dotenv()
@@ -21,8 +21,8 @@ INVALID_LOGIN_DATA = LoginTestData(
     step_name='Проверить вход в систему с невалидными данными.'
 )
 SQLEX_LOGIN_DATA = [SqlexLoginData(
-    login=os.getenv('LOGIN'),
-    password=os.getenv('PASSWORD'),
+    login=settings.login.get_secret_value(),  # type: ignore
+    password=settings.password.get_secret_value(),  # type: ignore
     expected_nickname='chajan'
 )]
 

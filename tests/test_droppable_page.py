@@ -22,8 +22,9 @@ class TestDroppablePage:
     @allure.severity(allure.severity_level.NORMAL)
     @pytest.mark.parametrize('msg', ['Dropped!'])
     def test_drag_and_drop(
-                self, opened_droppable_page: DroppablePage, msg: str, driver
+                self, open_page, msg: str
             ):
-        opened_droppable_page.switch_to_droppable_frame()
-        opened_droppable_page.drag_and_drop_element()
-        opened_droppable_page.check_text(expected_text=msg)
+        droppable_page: DroppablePage = open_page(DroppablePage)
+        droppable_page.switch_to_droppable_frame()
+        droppable_page.drag_and_drop_element()
+        droppable_page.check_text(expected_text=msg)

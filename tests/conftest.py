@@ -4,20 +4,14 @@ import allure
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from config.drivers import BROWSERS, DriverFactory
-from pages.alert_page import AlertPage
-from pages.basic_auth_page import BasicAuthPage
-from pages.droppable_page import DroppablePage
-from pages.frames_and_windows_page import FramesAndWindowsPage
-from pages.login_page import LoginPage
-from pages.main_page import MainPage
-from pages.sqlex_page import SqlexPage
+from config.settings import settings
 
 
 def pytest_addoption(parser: pytest.Parser):
     parser.addoption(
         '--grid',
         action='store_true',
-        help='Запуск тестов в Selenium Grid'
+        help='Запуск тестов в Selenium Grid / Selenoid'
     )
     parser.addoption(
         '--browser',
@@ -49,68 +43,35 @@ def browser_name(request: pytest.FixtureRequest):
 
 @pytest.fixture(scope='function')
 def driver(request: pytest.FixtureRequest, browser_name: str):
-    grid_mode = request.config.getoption('--grid')
+    remote_url = settings.grid_url if \
+        request.config.getoption('--grid') else None
     driver = None
     try:
-        driver = DriverFactory.create_driver(browser_name, grid_mode)
+        driver = DriverFactory.create_driver(browser_name, remote_url)
         yield driver
     finally:
         if driver:
             driver.quit()
 
 
-@pytest.fixture()
-def opened_main_page(driver: WebDriver) -> MainPage:
-    page = MainPage(driver)
-    return page
-
-
-@pytest.fixture()
-def opened_login_page(driver: WebDriver) -> LoginPage:
-    page = LoginPage(driver)
-    return page
-
-
-@pytest.fixture()
-def opened_sqlex_page(driver: WebDriver) -> SqlexPage:
-    page = SqlexPage(driver)
-    return page
-
-
-@pytest.fixture()
-def opened_droppable_page(driver: WebDriver) -> DroppablePage:
-    page = DroppablePage(driver)
-    return page
-
-
-@pytest.fixture()
-def opened_windows_page(driver: WebDriver) -> FramesAndWindowsPage:
-    page = FramesAndWindowsPage(driver)
-    return page
-
-
-@pytest.fixture()
-def opened_alert_page(driver: WebDriver) -> AlertPage:
-    page = AlertPage(driver)
-    return page
-
-
-@pytest.fixture()
-def opened_auth_page(driver: WebDriver) -> BasicAuthPage:
-    page = BasicAuthPage(driver)
-    return page
+@pytest.fixture
+def open_page(driver: WebDriver):
+    def open(page_class):
+        page = page_class(driver)
+        page.open()
+        return page
+    return open
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(
                 item: pytest.Item,
-                call: pytest.CallInfo
             ):
     outcome = yield
     report: pytest.TestReport = outcome.get_result()
 
-    if "driver" in item.funcargs:
-        driver: WebDriver = item.funcargs['driver']
+    if 'driver' in item.funcargs:  # type: ignore
+        driver: WebDriver = item.funcargs['driver']  # type: ignore
 
         if report.when == 'call' and report.failed:
             screenshot = driver.get_screenshot_as_png()

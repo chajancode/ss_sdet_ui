@@ -4,17 +4,10 @@ import allure
 from pages.alert_page import AlertPage
 
 
-@pytest.fixture(scope='function')
-def opened_alert_page(request, opened_alert_page: AlertPage):
-    opened_alert_page.open()
-    request.cls.alert_page = opened_alert_page
-    yield opened_alert_page
-
-
 @allure.epic('Тестирование UI')
 @allure.feature('Проверка работы алерта.')
 @pytest.mark.ui
-class TestFramesAndWindowsPage:
+class TestAlertPage:
 
     @allure.title('Ввод текста в алерт.')
     @allure.description(
@@ -24,9 +17,10 @@ class TestFramesAndWindowsPage:
         )
     @allure.severity(allure.severity_level.CRITICAL)
     def test_press_input_alert(
-                self, opened_alert_page: AlertPage, driver
+                self, open_page
             ):
-        opened_alert_page.click_input_alert_tab()
-        opened_alert_page.click_inner_button()
-        opened_alert_page.enter_text_and_apply()
-        opened_alert_page.check_if_text_appeared()
+        alert_page: AlertPage = open_page(AlertPage)
+        alert_page.click_input_alert_tab()
+        alert_page.click_inner_button()
+        alert_page.enter_text_and_apply()
+        alert_page.check_if_text_appeared()
