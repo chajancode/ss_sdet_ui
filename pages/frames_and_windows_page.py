@@ -97,16 +97,12 @@ class FramesAndWindowsPage(BasePage):
 
         return last_window_handle
 
-    @allure.step('Проверить количество открытых вкладок')
-    def check_tabs_amount(self) -> int:
+    @allure.step('Получить количество открытых вкладок')
+    def get_tabs_amount(self) -> int:
         """
         Возвращает количество открытых вкладок.
 
         Returns:
             int: Количество открытых вкладок
         """
-        amount = len(self.driver.window_handles)
-
-        assert amount == 3, (
-            f'Количество вкладок не равно 3. Открыто: {amount}'
-        )
+        return len(self.driver.window_handles)

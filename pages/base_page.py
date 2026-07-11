@@ -151,7 +151,7 @@ class BasePage(ABC):
                 и локатор элемента.
 
         Returns:
-            WebElement: Видимый элемент.
+            bool.
         """
         try:
             self.wait.until(

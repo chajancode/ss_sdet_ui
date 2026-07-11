@@ -7,7 +7,6 @@ from selenium.webdriver.remote.webelement import WebElement
 from config.pages_urls import URL_LOGIN_PAGE
 from locators.login_page_locators import LoginPageLocators
 from pages.base_page import BasePage
-from utils.batch_assert import BatchAssert
 
 
 class LoginPage(BasePage):
@@ -88,116 +87,55 @@ class LoginPage(BasePage):
         )
         return self.find_element(msg_locator)
 
-    @allure.step('Проверить видимость обязательных полей формы авторизации')
-    def check_fields_visibility(self) -> None:
+    @allure.step('Видно ли поле Username?')
+    def is_username_field_visible(self) -> bool:
         """
-        Проверяет видимость обязательных полей формы авторизации.
-
-        Убеждается, что поля "Username", "Password" и "Username description"
-        отображаются на странице.
-
-        Raises:
-            AssertionError: Если какое‑либо из полей не отображается.
-
-        Returns:
-            None
+        Видно ли поле Username?
         """
-        batch_assert = BatchAssert()
-        batch_assert.check(self.check_if_element_visible(
-                    LoginPageLocators.FLD_USERNAME),
-                    'Поле "Username" не отображается'
+        return self.check_if_element_visible(LoginPageLocators.FLD_USERNAME)
+
+    @allure.step('Видно ли поле Password?')
+    def is_password_field_visible(self) -> bool:
+        """
+        идно ли поле Password?
+        """
+        return self.check_if_element_visible(LoginPageLocators.FLD_PASSWORD)
+
+    @allure.step('Видно ли поле Username description?')
+    def is_username_description_field_visible(self) -> bool:
+        """
+        Видно ли поле Username description?
+        """
+        return self.check_if_element_visible(
+            LoginPageLocators.FLD_USERNAME_DESCRIPTION
         )
-        batch_assert.check(self.check_if_element_visible(
-                    LoginPageLocators.FLD_PASSWORD),
-                    'Поле "Password" не отображается'
-        )
-        batch_assert.check(self.check_if_element_visible(
-                    LoginPageLocators.FLD_USERNAME_DESCRIPTION),
-                    'Поле "Username (username description)" не отображается'
-        )
-        batch_assert.report()
 
-    @allure.step('Проверить некликабельность кнопки "login".')
-    def check_login_button_is_not_clickable(self) -> None:
+    @allure.step('Кликабельна ли кнопка Login?')
+    def is_login_button_clickable(self) -> bool:
         """
-        Проверяет, что кнопка "Login" недоступна для клика.
-
-        Raises:
-            AssertionError: Если кнопка кликабельна.
-
-        Returns:
-            None
+        Кликабельна ли кнопка Login?
         """
-        assert not self.is_clickable(
-                LoginPageLocators.BTN_LOGIN
-        ), 'Кнопка "Login" кликабельна'
+        return self.is_clickable(LoginPageLocators.BTN_LOGIN)
 
-    @allure.step('Проверить успешный выход из системы')
-    def check_logout(self) -> None:
+    @allure.step('Нажать Logout')
+    def click_logout(self) -> None:
         """
-        Проверяет процесс выхода из системы.
-
-        Кликает по кнопке "Logout", затем проверяет, что:
-        - форма входа снова видна;
-        - кнопка "Login" неактивна при пустых полях.
-
-        Raises:
-            AssertionError: Если кнопка «Logout» не найдена или не
-            кликабельна, либо если последующие проверки не пройдены.
-
-        Returns:
-            None
+        Кликает Logout
         """
-        self.click_element(
-                LoginPageLocators.BTN_LOGOUT
-            )
-        self.check_fields_visibility()
-        self.check_login_button_is_not_clickable()
+        self.click_element(LoginPageLocators.BTN_LOGOUT)
 
     @allure.step(
-            '{step_name}'
-            ' Имя пользователя: {username}, пароль: {password}.'
-            ' Ожидаемое сообщение: {msg_expected}.'
+            '{step_name} Пользователь: {username}, пароль: {password}.'
     )
-    def check_login(
-            self,
-            username: str,
-            password: str,
-            msg_expected: str,
-            test_type: str,
-            step_name: str # noqa
-            ):
+    def submit_login(
+            self, username: str, password: str,
+            test_type: str, step_name: str,  # noqa
+    ) -> str:
         """
-        Проверяет вход в систему с различными наборами тестовых данных
-        (валидными и невалидными)
-
-        Args:
-            username (str): Имя пользователя.
-            password (str): Пароль (неверный).
-            msg_expected (str): Ожидаемый текст сообщения
-                об ошибке авторизации.
-            test_type (str): Тип проверки ('success' или 'fail').
-            step_name (str): Название шага для отчёта Allure.
-
-        Raises:
-            AssertionError: Если сообщение отсутствует или не соответствует
-                ожидаемому результату.
-
-        Returns:
-            None
+        Логинится и возвращает текст сообщения-результата.
         """
         match test_type:
             case 'success': msg_locator = LoginPageLocators.MSG_LOGGED_IN
             case 'fail': msg_locator = LoginPageLocators.MSG_AUTH_ERROR
             case _: raise ValueError(f'Неизвестный test_type: {test_type}')
-
-        msg = self.do_login(
-            username=username,
-            password=password,
-            msg_locator=msg_locator
-        )
-
-        assert msg.text == msg_expected, (
-            f'Сообщение не появилось или не соответствует ожидаемому. '
-            f'Получен текст: {msg.text}, ожидалось: {msg_expected}'
-        )
+        return self.do_login(username, password, msg_locator).text

@@ -22,4 +22,5 @@ class TestBasicAuthPage:
         auth_page: BasicAuthPage = open_page(BasicAuthPage)
         auth_page.click_display_image()
         auth_page.authenticate()
-        auth_page.check_if_image_loaded()
+        result = auth_page.is_image_loaded()
+        assert result, 'Изображение не появилось'

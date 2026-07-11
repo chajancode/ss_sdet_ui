@@ -2,6 +2,7 @@ import pytest
 import allure
 
 from pages.alert_page import AlertPage
+from utils.string_builders import expected_alert_text
 
 
 @allure.epic('Тестирование UI')
@@ -20,7 +21,15 @@ class TestAlertPage:
                 self, open_page
             ):
         alert_page: AlertPage = open_page(AlertPage)
+        text = 'Selenium'
+
         alert_page.click_input_alert_tab()
         alert_page.click_inner_button()
-        alert_page.enter_text_and_apply()
-        alert_page.check_if_text_appeared()
+        alert_page.enter_text_and_apply(text)
+
+        result = alert_page.get_result_text()
+        expected = expected_alert_text(text)
+
+        assert result == expected, (
+            f'Текст не совпал. Ожидалось: {expected}, получено: {result}'
+        )

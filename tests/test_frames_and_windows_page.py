@@ -20,4 +20,7 @@ class TestFramesAndWindowsPage:
         windows_page: FramesAndWindowsPage = open_page(FramesAndWindowsPage)
         windows_page.open_new_browser_tab()
         windows_page.open_new_tab_from_current_tab()
-        windows_page.check_tabs_amount()
+        amount = windows_page.get_tabs_amount()
+        assert amount == 3, (
+            f'Количество вкладок не равно 3. Открыто: {amount}'
+        )

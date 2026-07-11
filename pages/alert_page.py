@@ -6,7 +6,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from config.pages_urls import URL_ALERT
 from pages.base_page import BasePage
 from locators.alerts_page_locators import AlertPageLocators
-from utils.collocator import alert_text_collocator
 
 
 class AlertPage(BasePage):
@@ -86,29 +85,13 @@ class AlertPage(BasePage):
         alert.accept()
         self.wait.until_not(EC.alert_is_present())
 
-    @allure.step('Проверить, что введённый текст появился.')
-    def check_if_text_appeared(self, text: str = 'Selenium'):
+    @allure.step('Получить текст, появившийся после подтверждения.')
+    def get_result_text(self) -> str:
         """
-        Проверяет, что введённый текст отобразился на странице после
-         подтверждения alert.
-
-        Находит элемент с результатом и сравнивает его текст с ожидаемым.
-        В случае несоответствия выбрасывает исключение AssertionError.
-
-        Args:
-            text (str, optional): Текст, который был введён в alert.
-                По умолчанию 'Selenium'.
+        Возвращает текст, появившийся после подтверждения alert.
 
         Returns:
-            None
+            str
 
-        Raises:
-            AssertionError: Если текст не появился или не соответствует
-                ожидаемому значению.
         """
-        result = self.find_element(AlertPageLocators.MSG_RESULT)
-        expected = alert_text_collocator(text)
-        assert result.text == expected, (
-            f'Текст не появился, или не соответствует ожидаемому.'
-            f' Ожидалось {expected}, получено {result.text}'
-        )
+        return self.find_element(AlertPageLocators.MSG_RESULT).text
