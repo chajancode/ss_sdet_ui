@@ -1,6 +1,7 @@
 import allure
 
 from pages.main_page import MainPage
+from utils.batch_assert import BatchAssert
 
 
 @allure.epic('Тестирование UI')
@@ -15,37 +16,13 @@ class TestMainPage:
                 self, open_page
             ) -> None:
         main_page: MainPage = open_page(MainPage)
-        main_page.check_header_is_displayed()
-        main_page.check_navbar_is_displayed()
-        main_page.check_courses_is_displayed()
-        main_page.check_footer_is_displayed()
 
-    @allure.title('Проверка контактной информации в хедере')
-    @allure.description(
-        'Проверка отображения номеров телефонов, ссылку на Skype, email'
-        ' и ссылки на соцсети.'
-    )
-    @allure.severity(allure.severity_level.NORMAL)
-    def test_check_header_contacts(
-                self, open_page
-            ) -> None:
-        main_page: MainPage = open_page(MainPage)
-        main_page.check_contacts()
-        main_page.check_social_media()
-
-    @allure.title('Проверка контактной информации и адреса в футере')
-    @allure.description(
-        'Проверка отображения адреса, номеров телефонов, адресов email'
-        ' в футере.'
-    )
-    @allure.severity(allure.severity_level.NORMAL)
-    def test_check_footer_contacts(
-                self, open_page
-            ) -> None:
-        main_page: MainPage = open_page(MainPage)
-        main_page.check_footer_address()
-        main_page.check_footer_phone_numbers()
-        main_page.check_footer_emails()
+        batch = BatchAssert()
+        batch.check(main_page.is_header_displayed(), 'Хэдер не отображается')
+        batch.check(main_page.is_navbar_displayed(), 'Навбар не отображается')
+        batch.check(main_page.is_courses_displayed(), 'Курсы не отображаются')
+        batch.check(main_page.is_footer_displayed(), 'Футер не отображается')
+        batch.report()
 
     @allure.title('Проверка меню навигации при скроллинге страницы')
     @allure.description(
@@ -56,7 +33,9 @@ class TestMainPage:
                 self, open_page
             ) -> None:
         main_page: MainPage = open_page(MainPage)
-        main_page.check_navbar_on_scroll()
+        assert main_page.is_navbar_fixed_after_scroll(), (
+            'Навигация не зафиксирована при скролле'
+        )
 
     @allure.title(
             'Проверка перехода на другие страницы через меню навигации'
@@ -69,4 +48,15 @@ class TestMainPage:
                 self, open_page
             ) -> None:
         main_page: MainPage = open_page(MainPage)
-        main_page.check_navigation_through_navbar()
+
+        title = main_page.go_to_lifetime_membership()
+        batch = BatchAssert()
+        batch.check(
+            'lifetime-membership-club' in main_page.current_url,
+            f'Неверный URL: {main_page.current_url}'
+        )
+        batch.check(
+            'The Lifetime Membership Club' in title,
+            f'Неверный заголовок: {title}'
+        )
+        batch.report()

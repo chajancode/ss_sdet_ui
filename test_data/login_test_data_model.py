@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 
 
 @dataclass
@@ -32,8 +32,8 @@ class LoginTestData:
 
 @dataclass
 class SqlexLoginData:
-    login: str
-    password: str
+    login: str = field(repr=False)
+    password: str = field(repr=False)
     expected_nickname: str
 
     def to_dict(self):
