@@ -19,6 +19,8 @@ def pytest_addoption(parser: pytest.Parser):
         help=(
             'Имя браузера. По умолчанию \'chrome\'.'
             ' \'all\' запускает все браузеры.'
+            'Перечисление через запятую, запускает перечисленные.'
+            '(например: \'chrome,firefox\')'
         )
     )
 
@@ -29,9 +31,10 @@ def pytest_generate_tests(metafunc):
 
         if browser == 'all':
             browsers = BROWSERS
-            metafunc.parametrize('browser_name', browsers)
         else:
-            metafunc.parametrize('browser_name', [browser])
+            browsers = browser.split(',')
+
+        metafunc.parametrize('browser_name', browsers)
 
 
 @pytest.fixture
