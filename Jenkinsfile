@@ -3,50 +3,53 @@ pipeline {
 
     triggers {
         cron('40 12 * * *')
+        githubPush()
     }
 
     parameters {
-        string(name: 'BRANCH', defaultValue: 'task_ci4', description: 'Ветка для сборки')
-        string(name: 'EMAILS', defaultValue: 'chajancode@gmail.com')
+        string(name: 'BRANCH', defaultValue: 'refactoring', description: 'Ветка для сборки')
+        string(name: 'EMAILS', defaultValue: 'chajancode@gmail.com', description: 'Имейл для доставки отчётов')
     }
-    
+
     environment {
         PYTHON_VERSION = '3.10'
         ALLURE_RESULTS = 'allure-results'
         ALLURE_REPORT = 'allure-report'
         COMPOSE_PROJECT_NAME = 'ss_sdet_ui'
         PROJECT_DIR = "${WORKSPACE}"
-        HOST_WORKSPACE = "/var/lib/docker/volumes/jenkins_home/_data/workspace/${JOB_NAME}"
     }
     
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout ([
+                    $class: 'GitSCM',
+                    branches: [[name: params.BRANCH]],
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
                 echo 'Код загружен из  GitHub'
             }
         }
         stage('Запуск тестов в докере') {
             steps {
+                withCredentials([
+                    string(credentialsId: 'sqlex-login', variable: 'SQLEX_LOGIN'),
+                    string(credentialsId: 'sqlex-password', variable: 'SQLEX_PASSWORD')
+                ]) {
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                     sh """
                         echo "PROJECT_DIR=${env.PROJECT_DIR}" > .env
+                        echo "LOGIN=${SQLEX_LOGIN}" >> .env
+                        echo "PASSWORD=${SQLEX_PASSWORD}" >> .env
                         docker-compose down || true
                         docker-compose up --build --abort-on-container-exit --exit-code-from tests 2>&1 | tee output.log
                         grep "^tests-1\\s*|" output.log | sed "s/^tests-1\\s*|//" > pytest.log
  
-
-                        docker cp \$(docker ps -aq -f name=tests):/app/${ALLURE_RESULTS}/. ${ALLURE_RESULTS}/ 
                         chmod -R 777 ${ALLURE_RESULTS}
-
-                        TEST_EXIT_CODE=\$?
-                        echo \$TEST_EXIT_CODE > test_exit_code.txt
                     """
-                    script {
-                        env.TEST_EXIT_CODE = readFile('test_exit_code.txt').trim()
-                    }
                     archiveArtifacts artifacts: "${ALLURE_RESULTS}/**/*", fingerprint: true, allowEmptyArchive: true
                 }
+            }
             }
             post {
                 always {

@@ -1,6 +1,9 @@
 venv
+.git
 .pytest_cache
 __pycache__
 allure-results
+allure-report
 .env
+*.pyc
 cookies_sqlex.json
