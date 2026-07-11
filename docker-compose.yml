@@ -21,9 +21,10 @@ services:
     depends_on:
       - selenoid
     environment:
-      - SELENOID_HOST=http://selenoid:4444/wd/hub
-      - SELENOID_URL=http://selenoid:4444/wd/hub
+      - GRID_URL=http://selenoid:4444/wd/hub
       - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     volumes:
       - ./allure-results:/app/allure-results
     command: ["/bin/bash", "/app/bash_scripts/selenoid_run.sh"]
