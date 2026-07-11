@@ -12,13 +12,7 @@ class RegexpPatterns:
     - URL социальных сетей.
     """
     PHONE_PATTERN = re.compile(
-        r'^\+(\d{1,3})'
-        r'[\s.-]*'
-        r'(\d{4,5})'
-        r'[\s.-]+'
-        r'(\d{2,3})'
-        r'[\s.-]+'
-        r'(\d{3,4})$'
+        r'^\+\d{1,3}[\s.-]?\d{6,12}$'
     )
     SKYPE_PATTERN = re.compile(r'^skype:[^?]*\?chat$')
     EMAIL_LINK_PATTERN = re.compile(

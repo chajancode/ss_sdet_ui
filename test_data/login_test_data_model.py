@@ -1,4 +1,6 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
+
+from pydantic import SecretStr
 
 
 @dataclass
@@ -32,8 +34,8 @@ class LoginTestData:
 
 @dataclass
 class SqlexLoginData:
-    login: str
-    password: str
+    login: SecretStr = field(repr=False)
+    password: SecretStr = field(repr=False)
     expected_nickname: str
 
     def to_dict(self):

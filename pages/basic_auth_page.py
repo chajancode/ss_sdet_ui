@@ -3,7 +3,7 @@ import allure
 from config.pages_urls import URL_BASIC_AUTH
 from pages.base_page import BasePage
 from locators.basic_auth_page_locators import BasicAuthPageLocators
-from utils.collocator import basic_auth_collocator
+from utils.string_builders import basic_auth_url_builder
 
 
 class BasicAuthPage(BasePage):
@@ -66,12 +66,12 @@ class BasicAuthPage(BasePage):
         Raises:
             AssertionError: Если изображение не появилось.
         """
-        auth_url = basic_auth_collocator(username, password)
+        auth_url = basic_auth_url_builder(username, password)
         self.driver.get(auth_url)
         self.click_display_image()
 
     @allure.step('Проверить появление изображения')
-    def check_if_image_loaded(self):
+    def is_image_loaded(self) -> bool:
         """
         Проверяет, что защищённое изображение успешно загрузилось после
         аутентификации.
@@ -79,13 +79,8 @@ class BasicAuthPage(BasePage):
         Ожидает появления изображения.
 
         Returns:
-            None
-
-        Raises:
-            AssertionError: Если изображение не появилось.
+            bool
         """
-        image = self.check_if_element_visible(
+        return self.check_if_element_visible(
                 BasicAuthPageLocators.IMG_DOWNLOADED
             )
-
-        assert image, 'Изображение не появилось.'

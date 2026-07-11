@@ -4,13 +4,6 @@ import allure
 from pages.frames_and_windows_page import FramesAndWindowsPage
 
 
-@pytest.fixture(scope='function')
-def opened_windows_page(request, opened_windows_page: FramesAndWindowsPage):
-    opened_windows_page.open()
-    request.cls.windows_page = opened_windows_page
-    yield opened_windows_page
-
-
 @allure.epic('Тестирование UI')
 @allure.feature('Открывание новых окон')
 @pytest.mark.ui
@@ -22,8 +15,12 @@ class TestBasicAuthPage:
         )
     @allure.severity(allure.severity_level.NORMAL)
     def test_open_browser_tabs(
-                self, opened_windows_page: FramesAndWindowsPage, driver
+                self, open_page
             ):
-        opened_windows_page.open_new_browser_tab()
-        opened_windows_page.open_new_tab_from_current_tab()
-        opened_windows_page.check_tabs_amount()
+        windows_page: FramesAndWindowsPage = open_page(FramesAndWindowsPage)
+        windows_page.open_new_browser_tab()
+        windows_page.open_new_tab_from_current_tab()
+        amount = windows_page.get_tabs_amount()
+        assert amount == 3, (
+            f'Количество вкладок не равно 3. Открыто: {amount}'
+        )

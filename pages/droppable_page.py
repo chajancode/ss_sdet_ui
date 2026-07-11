@@ -60,30 +60,15 @@ class DroppablePage(BasePage):
         )
         self.action.drag_and_drop(to_be_dragged, where_to_drag).perform()
 
-    @allure.step('Проверить изменился ли текст в принимающем элементе')
-    def check_text(self, expected_text: str):
+    @allure.step('Получить текст из принимающего элемента')
+    def get_dropped_text(self) -> str:
         """
-        Проверяет, изменился ли текст в принимающем элементе
+        Возвращает текст из принимающего элемента
         после drag and drop.
 
-        Метод получает текущий текст из целевого элемента и сравнивает его
-        с ожидаемым значением.
-
-        Args:
-            expected_text (str): Ожидаемый текст, который должен появиться
-                в принимающем элементе после перетаскивания.
-
         Returns:
-            None
-
-        Raises:
-            AssertionError: Если текст в элементе не соответствует ожидаемому
+            str
         """
-        current_text = self.find_element(
+        return self.find_element(
                 DroppablePageLocators.ELMNT_WHERE_TO_DRAG
             ).text
-        assert current_text == expected_text, (
-                f'Элемент не удалось переместить или текст не соответствует'
-                f' ожидаемому. Получен текст: {current_text},'
-                f' ожидался {expected_text}'
-            )

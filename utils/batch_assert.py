@@ -22,7 +22,7 @@ class BatchAssert:
         Returns:
             None
         """
-        if condition is None:
+        if not condition:
             self._errors.append(message)
 
     def report(self) -> None:

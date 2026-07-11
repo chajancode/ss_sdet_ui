@@ -1,7 +1,7 @@
 from config.pages_urls import URL_BASIC_AUTH
 
 
-def alert_text_collocator(text: str) -> str:
+def expected_alert_text(text: str) -> str:
     """
     Собирает ожидаемое сообщение.
 
@@ -14,7 +14,7 @@ def alert_text_collocator(text: str) -> str:
     return f'Hello {text}! How are you today?'
 
 
-def basic_auth_collocator(username: str, password: str) -> str:
+def basic_auth_url_builder(username: str, password: str) -> str:
     """
     Собирает url для basic auth.
 

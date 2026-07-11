@@ -4,13 +4,23 @@ import allure
 from pages.login_page import LoginPage
 from test_data.login_test_data_model import LoginTestData
 from test_data.login_test_data_sets import collect_datasets
+from utils.batch_assert import BatchAssert
 
 
-@pytest.fixture(scope='function')
-def opened_login_page(request, opened_login_page: LoginPage):
-    opened_login_page.open()
-    request.cls.login_page = opened_login_page
-    yield opened_login_page
+def assert_login_form_is_ready(login_page: LoginPage) -> None:
+    """
+    Форма входа видна и кнопка Login неактивна при пустых полях
+    """
+    batch = BatchAssert()
+    batch.check(login_page.is_username_field_visible(),
+                'Поле "Username" не отображается')
+    batch.check(login_page.is_password_field_visible(),
+                'Поле "Password" не отображается')
+    batch.check(login_page.is_username_description_field_visible(),
+                'Поле "Username description" не отображается')
+    batch.check(not login_page.is_login_button_clickable(),
+                'Кнопка "Login" кликабельна')
+    batch.report()
 
 
 @allure.epic('Тестирование UI')
@@ -24,10 +34,10 @@ class TestLoginPage:
     )
     @allure.severity(allure.severity_level.CRITICAL)
     def test_authentication_fields(
-                self, opened_login_page: LoginPage, driver
+                self, open_page
             ) -> None:
-        opened_login_page.check_fields_visibility()
-        opened_login_page.check_login_button_is_not_clickable()
+        login_page: LoginPage = open_page(LoginPage)
+        assert_login_form_is_ready(login_page)
 
     @allure.title('Проверка авторизации')
     @allure.description('Проверка авторизации с различными наборами данных')
@@ -37,11 +47,20 @@ class TestLoginPage:
     )
     def test_login(
                 self,
-                opened_login_page: LoginPage,
+                open_page,
                 test_data: LoginTestData,
-                driver
             ) -> None:
-        opened_login_page.check_login(**test_data.to_dict())
-
+        login_page: LoginPage = open_page(LoginPage)
+        message = login_page.submit_login(
+            username=test_data.username,
+            password=test_data.password,
+            test_type=test_data.test_type,
+            step_name=test_data.step_name
+        )
+        assert message == test_data.msg_expected, (
+            f'Сообщение не совпало. Получено: {message},'
+            f' ожидалось: {test_data.msg_expected}'
+        )
         if test_data.test_type == 'success':
-            opened_login_page.check_logout()
+            login_page.click_logout()
+            assert_login_form_is_ready(login_page)

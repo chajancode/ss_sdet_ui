@@ -4,17 +4,10 @@ import allure
 from pages.basic_auth_page import BasicAuthPage
 
 
-@pytest.fixture(scope='function')
-def opened_auth_page(request, opened_auth_page: BasicAuthPage):
-    opened_auth_page.open()
-    request.cls.alert_page = opened_auth_page
-    yield opened_auth_page
-
-
 @allure.epic('Тестирование UI')
 @allure.feature('Проверка Basic Authentication.')
 @pytest.mark.ui
-class TestFramesAndWindowsPage:
+class TestBasicAuthPage:
 
     @allure.title('Прохождение Basic Auth')
     @allure.description(
@@ -23,9 +16,11 @@ class TestFramesAndWindowsPage:
             ' отправляя реквизиты через адресную строку.'
         )
     @allure.severity(allure.severity_level.CRITICAL)
-    def test_press_input_alert(
-                self, opened_auth_page: BasicAuthPage, driver
+    def test_basic_auth(
+                self, open_page
             ):
-        opened_auth_page.click_display_image()
-        opened_auth_page.authenticate()
-        opened_auth_page.check_if_image_loaded()
+        auth_page: BasicAuthPage = open_page(BasicAuthPage)
+        auth_page.click_display_image()
+        auth_page.authenticate()
+        result = auth_page.is_image_loaded()
+        assert result, 'Изображение не появилось'

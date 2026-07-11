@@ -13,3 +13,4 @@ URL_BASIC_AUTH = (
                     'https://www.httpwatch.com/httpgallery/'
                     'authentication/#showExample10'
 )
+URL_CONTACT_PAGE = f'{URL_MAIN_PAGE}contact.html'
