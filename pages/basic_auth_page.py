@@ -73,11 +73,14 @@ class BasicAuthPage(BasePage):
     @allure.step('Проверить появление изображения')
     def is_image_loaded(self) -> bool:
         """
-        Возвращает результат проверки появления изображения.
+        Проверяет, что защищённое изображение успешно загрузилось после
+        аутентификации.
+
+        Ожидает появления изображения.
 
         Returns:
             bool
         """
         return self.check_if_element_visible(
-                BasicAuthPageLocators.DOWNLOADED_IMG
+                BasicAuthPageLocators.IMG_DOWNLOADED
             )

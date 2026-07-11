@@ -12,8 +12,8 @@ class TestBasicAuthPage:
     @allure.title('Прохождение Basic Auth')
     @allure.description(
             'Проверяет прохождение базовой аутентификации.'
-            ' Вызывает нативное окно браузера и обходит его'
-            ' отправкой реквизитов через адресную строку.'
+            ' Вызывает нативное окно браузера и обходит его,'
+            ' отправляя реквизиты через адресную строку.'
         )
     @allure.severity(allure.severity_level.CRITICAL)
     def test_basic_auth(

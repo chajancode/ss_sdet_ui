@@ -7,7 +7,7 @@ from pages.frames_and_windows_page import FramesAndWindowsPage
 @allure.epic('Тестирование UI')
 @allure.feature('Открывание новых окон')
 @pytest.mark.ui
-class TestFramesAndWindowsPage:
+class TestBasicAuthPage:
 
     @allure.title('Открывание новых окон и переход на них')
     @allure.description(
