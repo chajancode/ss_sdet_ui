@@ -1,4 +1,5 @@
 import allure
+from pydantic import SecretStr
 from selenium.common import TimeoutException, NoSuchElementException
 
 from config.pages_urls import URL_SQLEX_INDEX, URL_SQLEX_PAGE
@@ -63,8 +64,8 @@ class SqlexPage(BasePage):
 
     @allure.step('Авторизоваться на сайте.')
     def do_login(
-                self, expected_nickname: str, login: str, password: str
-            ) -> bool:
+            self, expected_nickname: str, login: SecretStr, password: SecretStr
+    ) -> bool:
         """
         Проверяет авторизацию на сайте. Если пользовательская сессия активна,
         авторизуется через куки, если нет - авторизуется по логину и паролю
@@ -83,8 +84,12 @@ class SqlexPage(BasePage):
             return True
 
         try:
-            self.find_element(SqlexLocators.FLD_LOGIN).send_keys(login)
-            self.find_element(SqlexLocators.FLD_PASSWORD).send_keys(password)
+            self.find_element(
+                SqlexLocators.FLD_LOGIN
+                ).send_keys(login.get_secret_value())
+            self.find_element(
+                SqlexLocators.FLD_PASSWORD
+                ).send_keys(password.get_secret_value())
             self.click_element(SqlexLocators.BTN_LOGIN)
 
             is_logged_in = self.find_element(
